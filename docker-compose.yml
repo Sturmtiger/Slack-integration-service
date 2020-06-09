@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:11-alpine
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgres/data
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+  project:
+    build:
+      context: .
+    volumes:
+      - .:/project/
+    ports:
+      - 7777:7777
+    depends_on:
+      - db
+    env_file:
+      - env/project.env
+    entrypoint: entrypoint/project.sh
+
+volumes:
+  db_data:
