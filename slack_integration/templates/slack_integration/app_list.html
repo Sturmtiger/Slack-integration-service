@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Slack App list{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-4 offset-4 mt-4">
+            <div id="app-list-block">
+                <h1 class="d-flex justify-content-center">Registered applications:</h1>
+                <ul class="list-group text-center">
+                    {% for app in applications %}
+                    <li class="list-group-item">
+                        <a href="{% url 'app_detail' app.pk %}">{{ app.name }}</a>
+                    </li>
+                    {% empty %}
+                    <p class="d-flex justify-content-center" style="color: red;">
+                        There are no registered applications yet..
+                    </p>
+                    {% endfor %}
+
+                    <button class="mt-4" onclick="location.href='{% url 'app_registration' %}?next={{ request.path }}'">
+                        Add new application
+                    </button>
+            </div>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

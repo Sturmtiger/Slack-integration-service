@@ -1,19 +1,29 @@
 from django.db import models
+from django.core.validators import MinLengthValidator, MaxLengthValidator
 
 
-class Application(models.Model):
-    name = models.CharField(max_length=50)
-    signing_secret = models.CharField()
-    bot_user_oauth_access_token = models.CharField()
+class SlackApplication(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    signing_secret = models.CharField(max_length=32,
+                                      validators=[
+                                          MinLengthValidator(32),
+                                      ])
+    bot_user_oauth_access_token = models.CharField(max_length=57,
+                                                   validators=[
+                                                       MinLengthValidator(57),
+                                                   ])
 
 
 class Template(models.Model):
-    application = models.ForeignKey(Application,
+    application = models.ForeignKey(SlackApplication,
                                     on_delete=models.CASCADE,
                                     related_name='templates')
     name = models.CharField(max_length=50)
     channel_name = models.CharField(max_length=15)
     text = models.TextField()
+
+    class Meta:
+        unique_together = ('application', 'name')
 
 
 class Attachment(models.Model):
