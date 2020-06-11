@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import MinLengthValidator, MaxLengthValidator
+from django.core.validators import MinLengthValidator
 
 
 class SlackApplication(models.Model):
@@ -20,7 +20,7 @@ class Template(models.Model):
                                     related_name='templates')
     name = models.CharField(max_length=50)
     channel_name = models.CharField(max_length=15)
-    text = models.TextField()
+    message_text = models.TextField()
 
     class Meta:
         unique_together = ('application', 'name')

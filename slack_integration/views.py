@@ -34,7 +34,7 @@ class AppRegistrationView(generic.CreateView):
 
 class CreateTemplateView(generic.CreateView):
     model = Template
-    fields = ('name', 'channel_name', 'text')
+    fields = ('channel_name', 'name', 'message_text')
     template_name = 'slack_integration/template_create.html'
 
     def form_valid(self, form):
@@ -45,6 +45,15 @@ class CreateTemplateView(generic.CreateView):
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+
+        form = super().get_form(form_class)
+        form.fields['name'].label = 'Template name'
+        form.fields['channel_name'].widget.attrs = {'placeholder': '#channel'}
+        return form
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['next'] = self.request.GET.get('next', '/')
@@ -53,3 +62,9 @@ class CreateTemplateView(generic.CreateView):
     def get_success_url(self):
         next_url = self.request.GET.get('next', '/')
         return next_url
+
+
+class TemplateDetailView(generic.DetailView):
+    model = Template
+    template_name = 'slack_integration/template_detail.html'
+    context_object_name = 'template'

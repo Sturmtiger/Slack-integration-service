@@ -1,17 +1,41 @@
 {% extends 'base.html' %}
 
-{% block title %}Slack App list{% endblock %}
+{% block title %}"{{ app.name }}" app detail{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
+
+    <div class="row">
+        <div class="col-4 offset-4 mt-4">
+            <div class="form-group">
+                <label>Application name</label>
+                <div>
+                    <input class="form-control" type="text" disabled value="{{ app.name }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Signing secret</label>
+                <div>
+                    <input class="form-control" type="text" disabled value="{{ app.signing_secret }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Bot user OAuth access token</label>
+                <div>
+                    <input class="form-control" type="text" disabled value="{{ app.bot_user_oauth_access_token }}">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-4 offset-4 mt-4">
             <div id="app-list-block">
-                <h1 class="d-flex justify-content-center">"{{ app.name }}" application templates:</h1>
+                <h1 class="d-flex justify-content-center">Templates:</h1>
                 <ul class="list-group text-center">
                     {% for template in app.templates.all %}
                     <li class="list-group-item">
-                        <a href="#">{{ template.name }}</a>
+                        <a href="{% url 'template_detail' template.pk %}">{{ template.name }}</a>
                     </li>
                     {% empty %}
                     <p class="d-flex justify-content-center" style="color: red;">
