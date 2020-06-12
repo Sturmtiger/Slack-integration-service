@@ -1,7 +1,10 @@
+from django.forms import modelformset_factory
 from django.http import HttpResponseRedirect
 from django.views import generic
 from django.shortcuts import get_object_or_404
-from .models import SlackApplication, Template
+from django.db import transaction
+
+from .models import SlackApplication, Template, Attachment, Button
 
 
 class AppListView(generic.ListView):
@@ -68,3 +71,57 @@ class TemplateDetailView(generic.DetailView):
     model = Template
     template_name = 'slack_integration/template_detail.html'
     context_object_name = 'template'
+
+
+class CreateButtonsView(generic.CreateView):
+    model = Attachment
+    fields = ('fallback', 'callback_id', 'color')
+    template_name = 'slack_integration/buttons_create.html'
+    formset_class = modelformset_factory(Button, extra=5,
+                                         fields=('name', 'text',
+                                                 'value', 'type'))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if 'formset' not in kwargs:
+            context['formset'] = self.formset_class(
+                queryset=Button.objects.none())
+
+        context['next'] = self.request.GET.get('next', '/')
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+
+        form = self.get_form()
+        formset = self.formset_class(request.POST)
+
+        if form.is_valid() and formset.is_valid():
+            return self.form_valid(form, formset)
+        else:
+            return self.form_invalid(form, formset)
+
+    @transaction.atomic
+    def form_valid(self, form, formset):
+        template = get_object_or_404(Template,
+                                     pk=self.kwargs['template_pk'])
+        self.object = form.save(commit=False)
+        self.object.template = template
+        self.object.save()
+
+        formset.save(commit=False)
+        for button_form in formset:
+            button_obj = button_form.save(commit=False)
+            button_obj.attachment = self.object
+            button_obj.save()
+
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, form, formset):
+        print('invalid')
+        return self.render_to_response(self.get_context_data(form=form,
+                                                             formset=formset))
+
+    def get_success_url(self):
+        next_url = self.request.GET.get('next', '/')
+        return next_url

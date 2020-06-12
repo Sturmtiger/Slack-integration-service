@@ -10,4 +10,6 @@ urlpatterns = [
          name='template_create'),
     path('template/<pk>/', views.TemplateDetailView.as_view(),
          name='template_detail'),
+    path('buttons-create/<template_pk>/', views.CreateButtonsView.as_view(),
+         name='buttons_create'),
 ]
