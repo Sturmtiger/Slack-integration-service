@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+
+{% load static %}
 {% load crispy_forms_tags %}
 
 {% block title %}Add buttons{% endblock %}
@@ -27,4 +29,10 @@
     </div>
 
 </div>
+
+<script src="{% static 'formset/jquery.formset.js' %}"></script>
+<script>
+
+</script>
+
 {% endblock %}

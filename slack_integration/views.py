@@ -77,7 +77,7 @@ class CreateButtonsView(generic.CreateView):
     model = Attachment
     fields = ('fallback', 'callback_id', 'color')
     template_name = 'slack_integration/buttons_create.html'
-    formset_class = modelformset_factory(Button, extra=5,
+    formset_class = modelformset_factory(Button,
                                          fields=('name', 'text',
                                                  'value', 'type'))
 
