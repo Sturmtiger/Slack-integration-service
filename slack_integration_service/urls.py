@@ -20,4 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
     path('', include('slack_integration.urls')),
+    path('api/', include('slack_integration.api.urls')),
 ]

@@ -1,13 +1,14 @@
-from ..models import Template
+from ..models import SlackApplication, Template
 from django.core.exceptions import ObjectDoesNotExist
 
 
 class SlackMessageConstructor:
     """Constructs the message."""
 
-    def __init__(self, template_name, message_text):
-        self.template_name = template_name
-        self.message_text = message_text
+    def __init__(self, **kwargs):
+        self.app_name = kwargs['app_name']
+        self.template_name = kwargs['template_name']
+        self.message_text = kwargs['text']
 
         self._extract_template_object()
 
@@ -15,9 +16,7 @@ class SlackMessageConstructor:
         message = {
             'channel': self.template_obj.channel_name,
             'text': self._concat_message(),
-            'attachments': [
-                self._get_attachment()
-            ]
+            'attachments': self._get_attachments()
         }
 
         return message
@@ -27,15 +26,29 @@ class SlackMessageConstructor:
         Extracts the template object and assigns it
         as an attribute of the class instance.
         """
+        app_obj = self._get_application_object()
+
         try:
-            template_obj = Template.objects.get(name=self.template_name)
+            template_obj = Template.objects.get(application=app_obj,
+                                                name=self.template_name)
             self.template_obj = template_obj
 
         except ObjectDoesNotExist:
             raise ObjectDoesNotExist(
                 'This application does not have a template with this name.')
 
-    def _get_attachment(self):
+    def _get_application_object(self):
+        try:
+            print(self.app_name)
+            app_obj = SlackApplication.objects.get(name=self.app_name)
+            return app_obj
+        except ObjectDoesNotExist:
+            raise ObjectDoesNotExist(
+                'Application with this name does not exist.')
+
+    def _get_attachments(self):
+        attachments = []
+
         if hasattr(self.template_obj, 'attachment'):
             attachment_obj = self.template_obj.attachment
 
@@ -45,10 +58,9 @@ class SlackMessageConstructor:
                 'color': attachment_obj.color,
                 'actions': self._get_buttons(attachment_obj)
             }
+            attachments.append(attachment)
 
-            return attachment
-
-        return ''
+        return attachments
 
     def _get_buttons(self, attachment):
         buttons = [
