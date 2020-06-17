@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Add buttons{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-2 offset-5 mt-4">
+            <form method="post">
+                {% csrf_token %}
+                <div class="actions-block-form mb-4">
+                    <p class="d-flex justify-content-center">Actions block</p>
+                    {{ form|crispy }}
+                </div>
+
+                {{ formset.management_form }}
+                <div id="form_set">
+                {% for form in formset %}
+                    <div class="button-formset border border-dark rounded p-1 my-2">
+                        <p class="d-flex justify-content-center">Button</p>
+                        {{ form|crispy }}
+                    </div>
+                {% endfor %}
+                </div>
+
+                <input type="button" value="Add more" id="add_more">
+                <div id="empty_form" style="display: none">
+                    <div class="button-formset border border-dark rounded p-1 my-2">
+                        <p class="d-flex justify-content-center">Button</p>
+                        {{ formset.empty_form|crispy }}
+                    </div>
+                </div>
+
+                <a href="{{ next }}">Cancel</a>
+                <button type="submit">Create</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $('#add_more').click(function() {
+        let form_idx = $('#id_form-TOTAL_FORMS').val();
+        $('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
+        $('#id_form-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+    });
+</script>
+
+{% endblock %}

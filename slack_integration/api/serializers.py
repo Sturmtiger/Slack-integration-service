@@ -28,3 +28,13 @@ class PostMessageSerializer(Serializer):
             raise ValidationError(errors)
 
         return data
+
+
+class UpdateMessageSerializer(PostMessageSerializer):
+    ts = fields.CharField()
+
+
+class DeleteMessageSerializer(Serializer):
+    app_name = fields.CharField()
+    channel = fields.CharField()
+    ts = fields.CharField()

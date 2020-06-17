@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}"{{ template.name }}" template detail{% endblock %}
+{% block title %}Actions block create{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
@@ -24,6 +24,25 @@
                 <div>
                     <textarea class="form-control" type="text" disabled>{{ template.message_text }}</textarea>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-4 offset-4 mt-4">
+            <div id="app-list-block">
+                <ul class="list-group text-center">
+                    {% if template.actions_block %}
+                        <li class="list-group-item">
+                            <a href="">Actions block</a>
+                        </li>
+                    {% else %}
+                        <p class="d-flex justify-content-center" style="color: red;">
+                            There is no actions block yet..
+                            <a href="{% url 'actions_block_create' template.pk %}?next={{ request.path }}">Create?</a>
+                        </p>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </div>

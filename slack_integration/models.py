@@ -21,24 +21,23 @@ class Template(models.Model):
     name = models.CharField(max_length=50)
     channel_name = models.CharField(max_length=15)
     message_text = models.TextField()
+    fallback_text = models.CharField(max_length=255)
 
     class Meta:
         unique_together = ('application', 'name')
 
 
-class Attachment(models.Model):
+class ActionsBlock(models.Model):
     template = models.OneToOneField(Template,
-                                    on_delete=models.CASCADE)
-    fallback = models.CharField(max_length=100)
-    callback_id = models.CharField(max_length=50)
-    color = models.CharField(max_length=7, blank=True)
+                                    on_delete=models.CASCADE,
+                                    related_name='actions_block')
+    block_id = models.CharField(max_length=255)
 
 
 class Button(models.Model):
-    attachment = models.ForeignKey(Attachment,
-                                   on_delete=models.CASCADE,
-                                   related_name='buttons')
-    name = models.CharField(max_length=50)
-    text = models.CharField(max_length=50)
-    type = models.CharField(max_length=50)
-    value = models.CharField(max_length=50)
+    actions_block = models.ForeignKey(ActionsBlock,
+                                      on_delete=models.CASCADE,
+                                      related_name='buttons')
+    action_id = models.CharField(max_length=255)
+    text = models.CharField(max_length=75)
+    # value = models.CharField(max_length=2000)  # needed?

@@ -4,7 +4,7 @@ from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.db import transaction
 
-from .models import SlackApplication, Template, Attachment, Button
+from .models import SlackApplication, Template, ActionsBlock, Button
 
 
 class AppListView(generic.ListView):
@@ -25,7 +25,6 @@ class AppRegistrationView(generic.CreateView):
     template_name = 'slack_integration/app_registration.html'
 
     def get_context_data(self, **kwargs):
-        print(self.get_form(), 'GET')
         context = super().get_context_data(**kwargs)
         context['next'] = self.request.GET.get('next', '/')
         return context
@@ -37,7 +36,7 @@ class AppRegistrationView(generic.CreateView):
 
 class CreateTemplateView(generic.CreateView):
     model = Template
-    fields = ('channel_name', 'name', 'message_text')
+    fields = ('channel_name', 'name', 'message_text', 'fallback_text')
     template_name = 'slack_integration/template_create.html'
 
     def form_valid(self, form):
@@ -54,7 +53,7 @@ class CreateTemplateView(generic.CreateView):
 
         form = super().get_form(form_class)
         form.fields['name'].label = 'Template name'
-        form.fields['channel_name'].widget.attrs = {'placeholder': '#channel'}
+        form.fields['channel_name'].widget.attrs = {'placeholder': 'channel'}
         return form
 
     def get_context_data(self, **kwargs):
@@ -73,13 +72,12 @@ class TemplateDetailView(generic.DetailView):
     context_object_name = 'template'
 
 
-class CreateButtonsView(generic.CreateView):
-    model = Attachment
-    fields = ('fallback', 'callback_id', 'color')
-    template_name = 'slack_integration/buttons_create.html'
+class CreateActionsBlockView(generic.CreateView):
+    model = ActionsBlock
+    fields = ('block_id',)
+    template_name = 'slack_integration/actions_block_create.html'
     formset_class = modelformset_factory(Button,
-                                         fields=('name', 'text',
-                                                 'value', 'type'))
+                                         fields=('action_id', 'text'))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -112,13 +110,12 @@ class CreateButtonsView(generic.CreateView):
         formset.save(commit=False)
         for button_form in formset:
             button_obj = button_form.save(commit=False)
-            button_obj.attachment = self.object
+            button_obj.actions_block = self.object
             button_obj.save()
 
         return HttpResponseRedirect(self.get_success_url())
 
     def form_invalid(self, form, formset):
-        print('invalid')
         return self.render_to_response(self.get_context_data(form=form,
                                                              formset=formset))
 
