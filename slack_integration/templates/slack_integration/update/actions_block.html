@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Update actions block{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-2 offset-5 mt-4">
+            <form method="post">
+                {% csrf_token %}
+                <div class="actions-block-form mb-4">
+                    <p class="d-flex justify-content-center">Actions block</p>
+                    {{ form|crispy }}
+                </div>
+
+                {{ formset.management_form }}
+                <div id="form_set">
+                    {% for form in formset %}
+                        <div class="button-formset border border-dark rounded p-1 my-2">
+                            <p class="d-flex justify-content-center">Button</p>
+                            {{ form|crispy }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    <input class="btn btn-link" type="button" value="+Add button" id="add_more">
+                </div>
+
+                {% if formset.non_form_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ formset.non_form_errors }}
+                    </div>
+                {% endif %}
+
+                <div id="empty_form" style="display: none">
+                    <div class="button-formset border border-dark rounded p-1 my-2">
+                        <p class="d-flex justify-content-center">Button</p>
+                        {{ formset.empty_form|crispy }}
+                    </div>
+                </div>
+
+                <a href="{{ next }}">Cancel</a>
+                <button type="submit">Update</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

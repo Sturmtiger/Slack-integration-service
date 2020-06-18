@@ -25,6 +25,10 @@
                     <textarea class="form-control" type="text" disabled>{{ template.message_text }}</textarea>
                 </div>
             </div>
+
+            <a href="{% url 'template_update' template.pk %}?next={{ request.path }}">
+                <i class="fas fa-edit">Update template</i>
+            </a>
         </div>
     </div>
 
@@ -34,7 +38,7 @@
                 <ul class="list-group text-center">
                     {% if template.actions_block %}
                         <li class="list-group-item">
-                            <a href="">Actions block</a>
+                            <a href="{% url 'actions-block-detail' template.actions_block.pk %}">Actions block</a>
                         </li>
                     {% else %}
                         <p class="d-flex justify-content-center" style="color: red;">

@@ -25,6 +25,11 @@
                     <input class="form-control" type="text" disabled value="{{ app.bot_user_oauth_access_token }}">
                 </div>
             </div>
+
+            <a href="{% url 'app_update' app.pk %}?next={{ request.path }}">
+                <i class="fas fa-edit">Update app</i>
+            </a>
+
         </div>
     </div>
 

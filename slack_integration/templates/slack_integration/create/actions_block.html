@@ -27,7 +27,16 @@
                 {% endfor %}
                 </div>
 
-                <input type="button" value="Add more" id="add_more">
+                <div class="d-flex justify-content-center">
+                    <input class="btn btn-link" type="button" value="+Add button" id="add_more">
+                </div>
+
+                {% if formset.non_form_errors %}
+                <div class="alert alert-danger" role="alert">
+                    {{ formset.non_form_errors }}
+                </div>
+                {% endif %}
+
                 <div id="empty_form" style="display: none">
                     <div class="button-formset border border-dark rounded p-1 my-2">
                         <p class="d-flex justify-content-center">Button</p>

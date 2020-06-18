@@ -11,6 +11,8 @@ psycopg2-binary = "*"
 django-crispy-forms = "*"
 djangorestframework = "*"
 slackclient = "*"
+flake8 = "*"
+pylint = "*"
 
 [requires]
 python_version = "3.7"
