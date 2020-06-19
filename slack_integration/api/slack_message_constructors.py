@@ -1,9 +1,10 @@
-from ..models import SlackApplication, Template
 from django.core.exceptions import ObjectDoesNotExist
+
+from ..models import SlackApplication, Template
 
 
 class PostSlackMessageConstructor:
-    """Constructs the message."""
+    """Constructs the message for Slack API."""
 
     def __init__(self, **kwargs):
         self.app_name = kwargs['app_name']

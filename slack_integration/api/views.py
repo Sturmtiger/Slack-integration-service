@@ -2,12 +2,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from slack.errors import SlackApiError
 
+from slack_integration.models import SlackApplication
+
 from .serializers import (PostMessageSerializer, UpdateMessageSerializer,
                           DeleteMessageSerializer)
 from .slack_message_constructors import (PostSlackMessageConstructor,
                                          UpdateSlackMessageConstructor)
 from .slack_connector import WebClient
-from slack_integration.models import SlackApplication
 
 
 class PostMessageView(APIView):

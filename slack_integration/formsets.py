@@ -3,6 +3,9 @@ from django.forms import BaseModelFormSet, ValidationError
 
 class BaseButtonFormSet(BaseModelFormSet):
     def clean(self):
+        """
+        Checks that no one field in the forms is duplicated.
+        """
         checked_buttons_data = []
 
         for form in self.forms:

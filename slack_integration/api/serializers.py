@@ -8,10 +8,10 @@ class PostMessageSerializer(Serializer):
     template_name = fields.CharField()
     text = fields.CharField()
 
-    def validate(self, data):
+    def validate(self, attrs):
         errors = dict()
 
-        app = SlackApplication.objects.filter(name=data['app_name'])
+        app = SlackApplication.objects.filter(name=attrs['app_name'])
         if not app.exists():
             errors['app_name'] = 'Application with this name does not exist.'
 
@@ -19,7 +19,7 @@ class PostMessageSerializer(Serializer):
         if not errors:
             app = app.get()
             template = Template.objects.filter(application=app,
-                                               name=data['template_name'])
+                                               name=attrs['template_name'])
             if not template.exists():
                 errors['template_name'] = 'Template with this name ' \
                                           'does not exist.'
@@ -27,7 +27,7 @@ class PostMessageSerializer(Serializer):
         if errors:
             raise ValidationError(errors)
 
-        return data
+        return attrs
 
 
 class UpdateMessageSerializer(PostMessageSerializer):
