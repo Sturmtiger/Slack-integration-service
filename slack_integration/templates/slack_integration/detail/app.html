@@ -3,58 +3,74 @@
 {% block title %}"{{ app.name }}" app detail{% endblock %}
 
 {% block content %}
-<div class="container-fluid">
+    <div class="container-fluid">
 
-    <div class="row">
-        <div class="col-4 offset-4 mt-4">
-            <div class="form-group">
-                <label>Application name</label>
-                <div>
-                    <input class="form-control" type="text" disabled value="{{ app.name }}">
+        <div class="row">
+            <div class="col-4 offset-4 mt-4">
+                <div class="form-group">
+                    <label>Application name</label>
+                    <div>
+                        <input class="form-control" type="text" disabled value="{{ app.name }}">
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label>Signing secret</label>
-                <div>
-                    <input class="form-control" type="text" disabled value="{{ app.signing_secret }}">
+                <div class="form-group">
+                    <label>Signing secret</label>
+                    <div>
+                        <input class="form-control" type="text" disabled value="{{ app.signing_secret }}">
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label>Bot user OAuth access token</label>
-                <div>
-                    <input class="form-control" type="text" disabled value="{{ app.bot_user_oauth_access_token }}">
+                <div class="form-group">
+                    <label>Bot user OAuth access token</label>
+                    <div>
+                        <input class="form-control" type="text" disabled value="{{ app.bot_user_oauth_access_token }}">
+                    </div>
                 </div>
-            </div>
 
-            <a href="{% url 'app_update' app.pk %}?next={{ request.path }}">
-                <i class="fas fa-edit">Update app</i>
-            </a>
+                {% if perms.slack_integration.change_slackapplication %}
+                    <a href="{% url 'app-update' app.pk %}?next={{ request.path }}">
+                        <i class="fas fa-edit">Update app</i>
+                    </a>
+                {% endif %}
 
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-4 offset-4 mt-4">
-            <div id="app-list-block">
-                <h1 class="d-flex justify-content-center">Templates:</h1>
-                <ul class="list-group text-center">
-                    {% for template in app.templates.all %}
-                    <li class="list-group-item">
-                        <a href="{% url 'template_detail' template.pk %}">{{ template.name }}</a>
-                    </li>
-                    {% empty %}
-                    <p class="d-flex justify-content-center" style="color: red;">
-                        There are no templates yet..
-                    </p>
-                    {% endfor %}
-
-                    <button class="mt-4"
-                            onclick="location.href='{% url 'template_create' app.pk %}?next={{ request.path }}'">
-                        Create new template
-                    </button>
-                </ul>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-4 offset-4 mt-4">
+                <div id="app-list-block">
+                    <h1 class="d-flex justify-content-center">Templates:</h1>
+                    <ul class="list-group text-center">
+                        {% for template in app.templates.all %}
+                            <li class="list-group-item">
+                                <a href="{% url 'template-detail' template.pk %}">{{ template.name }}</a>
+
+                                {% if perms.slack_integration.delete_template %}
+                                    <form action="{% url 'template-delete' template.pk %}?next={{ request.path }}"
+                                          method="post"
+                                          style="display: inline;"
+                                          onsubmit="return confirm('Are you sure you want to delete &quot;{{ template.name }}&quot; template?')">
+                                        {% csrf_token %}
+                                        <button type="submit" style="border: none;">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </li>
+                        {% empty %}
+                            <p class="d-flex justify-content-center" style="color: red;">
+                                There are no templates yet..
+                            </p>
+                        {% endfor %}
+
+                        {% if perms.slack_integration.add_template %}
+                            <button class="mt-4"
+                                    onclick="location.href='{% url 'template-create' app.pk %}?next={{ request.path }}'">
+                                Create new template
+                            </button>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 {% endblock %}

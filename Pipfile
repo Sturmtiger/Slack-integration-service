@@ -13,6 +13,7 @@ djangorestframework = "*"
 slackclient = "*"
 flake8 = "*"
 pylint = "*"
+django-debug-toolbar = "*"
 
 [requires]
 python_version = "3.7"

@@ -3,48 +3,52 @@
 {% block title %}Actions block detail {% endblock %}
 
 {% block content %}
-<div class="container">
+    <div class="container">
 
-    <div class="row">
-        <div class="col-4 offset-4 mt-4">
+        <div class="row">
+            <div class="col-4 offset-4 mt-4">
 
-            <div class="actions-block">
-                <h2 class="text-center">Actions block</h2>
-                <div class="form-group">
-                    <label>Block id</label>
-                    <div>
-                        <input class="form-control" type="text" disabled value="{{ actions_block.block_id }}">
+                <div class="actions-block">
+                    <h2 class="text-center">Actions block</h2>
+                    <div class="form-group">
+                        <label>Block id</label>
+                        <div>
+                            <input class="form-control" type="text" disabled value="{{ actions_block.block_id }}">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <a href="{% url 'actions-block-update' actions_block.pk %}?next={{ request.path }}" class="d-flex justify-content-center">
-                <i class="fas fa-edit">Update actions block</i>
-            </a>
-        </div>
-    </div>
+                {% if perms.slack_integration.change_actionsblock %}
+                    <a href="{% url 'actions-block-update' actions_block.pk %}?next={{ request.path }}"
+                       class="d-flex justify-content-center">
+                        <i class="fas fa-edit">Update actions block</i>
+                    </a>
+                {% endif %}
 
-    <div class="row d-flex justify-content-around mt-4 ">
-        {% for button in actions_block.buttons.all %}
-        <div class="col-3 border border-dark rounded p-1 my-2">
-            <div class="button">
-                <h4 class="text-center">Button</h4>
-                <div class="form-group">
-                    <label>Action id</label>
-                    <div>
-                        <input class="form-control" type="text" disabled value="{{ button.action_id }}">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Text</label>
-                    <div>
-                        <input class="form-control" type="text" disabled value="{{ button.text }}">
-                    </div>
-                </div>
             </div>
         </div>
-        {% endfor %}
-    </div>
 
-</div>
+        <div class="row d-flex justify-content-around mt-4 ">
+            {% for button in actions_block.buttons.all %}
+                <div class="col-3 border border-dark rounded p-1 my-2">
+                    <div class="button">
+                        <h4 class="text-center">Button</h4>
+                        <div class="form-group">
+                            <label>Action id</label>
+                            <div>
+                                <input class="form-control" type="text" disabled value="{{ button.action_id }}">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Text</label>
+                            <div>
+                                <input class="form-control" type="text" disabled value="{{ button.text }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
 {% endblock %}

@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.db import transaction
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 from .models import SlackApplication, Template, ActionsBlock, Button
 from .formsets import BaseButtonFormSet
@@ -20,7 +21,9 @@ class AppDetailView(generic.DetailView):
     context_object_name = 'app'
 
 
-class CreateAppView(generic.CreateView):
+class CreateAppView(PermissionRequiredMixin, generic.CreateView):
+    permission_required = 'slack_integration.add_slackapplication'
+
     model = SlackApplication
     fields = ('name', 'signing_secret', 'bot_user_oauth_access_token')
     template_name = 'slack_integration/create/app.html'
@@ -35,7 +38,9 @@ class CreateAppView(generic.CreateView):
         return next_url
 
 
-class UpdateAppView(generic.UpdateView):
+class UpdateAppView(PermissionRequiredMixin, generic.UpdateView):
+    permission_required = 'slack_integration.change_slackapplication'
+
     model = SlackApplication
     fields = ('name', 'signing_secret', 'bot_user_oauth_access_token')
     template_name = 'slack_integration/update/app.html'
@@ -51,7 +56,19 @@ class UpdateAppView(generic.UpdateView):
         return next_url
 
 
-class CreateTemplateView(generic.CreateView):
+class DeleteAppView(PermissionRequiredMixin, generic.DeleteView):
+    permission_required = 'slack_integration.delete_slackapplication'
+
+    model = SlackApplication
+
+    def get_success_url(self):
+        next_url = self.request.GET.get('next', '/')
+        return next_url
+
+
+class CreateTemplateView(PermissionRequiredMixin, generic.CreateView):
+    permission_required = 'slack_integration.add_template'
+
     model = Template
     fields = ('channel_name', 'name', 'message_text', 'fallback_text')
     template_name = 'slack_integration/create/template.html'
@@ -89,7 +106,9 @@ class TemplateDetailView(generic.DetailView):
     context_object_name = 'template'
 
 
-class UpdateTemplateView(generic.UpdateView):
+class UpdateTemplateView(PermissionRequiredMixin, generic.UpdateView):
+    permission_required = 'slack_integration.change_template'
+
     model = Template
     fields = ('channel_name', 'name', 'message_text', 'fallback_text')
     template_name = 'slack_integration/update/template.html'
@@ -105,11 +124,23 @@ class UpdateTemplateView(generic.UpdateView):
         return next_url
 
 
-class CreateActionsBlockView(generic.CreateView):
+class DeleteTemplateView(PermissionRequiredMixin, generic.DeleteView):
+    permission_required = 'slack_integration.delete_template'
+
+    model = Template
+
+    def get_success_url(self):
+        next_url = self.request.GET.get('next', '/')
+        return next_url
+
+
+class CreateActionsBlockView(PermissionRequiredMixin, generic.CreateView):
     """
     Creates an ActionsBlock object
     and at least 1 button(by formset) related with it.
     """
+    permission_required = 'slack_integration.add_actionsblock'
+
     model = ActionsBlock
     fields = ('block_id',)
     template_name = 'slack_integration/create/actions_block.html'
@@ -172,7 +203,9 @@ class ActionsBlockDetailView(generic.DetailView):
     context_object_name = 'actions_block'
 
 
-class UpdateActionsBlockView(generic.UpdateView):
+class UpdateActionsBlockView(PermissionRequiredMixin, generic.UpdateView):
+    permission_required = 'slack_integration.change_actionsblock'
+
     model = ActionsBlock
     fields = ('block_id',)
     template_name = 'slack_integration/update/actions_block.html'
@@ -210,6 +243,16 @@ class UpdateActionsBlockView(generic.UpdateView):
     def form_invalid(self, form, formset):
         return self.render_to_response(self.get_context_data(form=form,
                                                              formset=formset))
+
+    def get_success_url(self):
+        next_url = self.request.GET.get('next', '/')
+        return next_url
+
+
+class DeleteActionsBlockView(PermissionRequiredMixin, generic.DeleteView):
+    permission_required = 'slack_integration.delete_actionsblock'
+
+    model = ActionsBlock
 
     def get_success_url(self):
         next_url = self.request.GET.get('next', '/')
