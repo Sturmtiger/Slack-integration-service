@@ -12,6 +12,9 @@ from .slack_connector import WebClient
 
 
 class CreateUpdateDestroySlackMessageView(APIView):
+    """
+    Works with the Slack API. Delegates requests to Slack API.
+    """
     def post(self, request):
         serializer = PostMessageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
