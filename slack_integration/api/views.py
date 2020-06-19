@@ -11,7 +11,7 @@ from .slack_message_constructors import (PostSlackMessageConstructor,
 from .slack_connector import WebClient
 
 
-class PostMessageView(APIView):
+class CreateUpdateDestroySlackMessageView(APIView):
     def post(self, request):
         serializer = PostMessageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -32,9 +32,7 @@ class PostMessageView(APIView):
         return Response(slack_response.data,
                         status=slack_response.status_code)
 
-
-class UpdateMessageView(APIView):
-    def post(self, request):
+    def put(self, request):
         serializer = UpdateMessageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         app_obj = SlackApplication.objects.get(
@@ -54,9 +52,7 @@ class UpdateMessageView(APIView):
         return Response(slack_response.data,
                         status=slack_response.status_code)
 
-
-class DeleteMessageView(APIView):
-    def post(self, request):
+    def delete(self, request):
         serializer = DeleteMessageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         app_obj = SlackApplication.objects.get(
