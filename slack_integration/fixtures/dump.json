@@ -1,0 +1,498 @@
+[
+{
+    "model": "auth.group",
+    "fields": {
+        "name": "Admin",
+        "permissions": [
+            [
+                "add_actionsblock",
+                "slack_integration",
+                "actionsblock"
+            ],
+            [
+                "change_actionsblock",
+                "slack_integration",
+                "actionsblock"
+            ],
+            [
+                "delete_actionsblock",
+                "slack_integration",
+                "actionsblock"
+            ],
+            [
+                "view_actionsblock",
+                "slack_integration",
+                "actionsblock"
+            ],
+            [
+                "add_button",
+                "slack_integration",
+                "button"
+            ],
+            [
+                "change_button",
+                "slack_integration",
+                "button"
+            ],
+            [
+                "delete_button",
+                "slack_integration",
+                "button"
+            ],
+            [
+                "view_button",
+                "slack_integration",
+                "button"
+            ],
+            [
+                "add_slackapplication",
+                "slack_integration",
+                "slackapplication"
+            ],
+            [
+                "change_slackapplication",
+                "slack_integration",
+                "slackapplication"
+            ],
+            [
+                "delete_slackapplication",
+                "slack_integration",
+                "slackapplication"
+            ],
+            [
+                "view_slackapplication",
+                "slack_integration",
+                "slackapplication"
+            ],
+            [
+                "add_template",
+                "slack_integration",
+                "template"
+            ],
+            [
+                "change_template",
+                "slack_integration",
+                "template"
+            ],
+            [
+                "delete_template",
+                "slack_integration",
+                "template"
+            ],
+            [
+                "view_template",
+                "slack_integration",
+                "template"
+            ]
+        ]
+    }
+},
+{
+    "model": "auth.group",
+    "fields": {
+        "name": "Developer",
+        "permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$180000$mZOIHEHbW51q$KUhaxNliTtb/icRL/XT8aHySIiVA6crJdWYCZDX5Gjc=",
+        "last_login": "2020-06-22T14:43:27.290Z",
+        "is_superuser": true,
+        "username": "adm",
+        "first_name": "",
+        "last_name": "",
+        "email": "",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2020-06-19T09:18:14Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$180000$aWnoeDg5TqP1$ArCp3LGz5PNtAUQ0EuUKLuftw+RJTGvF5/g5s2RWA9Y=",
+        "last_login": "2020-06-22T06:52:06.804Z",
+        "is_superuser": false,
+        "username": "admin",
+        "first_name": "",
+        "last_name": "",
+        "email": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2020-06-22T06:49:47Z",
+        "groups": [
+            [
+                "Admin"
+            ]
+        ],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$180000$YBNmVlrK3K5B$47Oi8QMJLoHGw31vV5uVikZbho+MtTJs/LKVj7yKzNg=",
+        "last_login": "2020-06-22T06:52:13.490Z",
+        "is_superuser": false,
+        "username": "dev",
+        "first_name": "",
+        "last_name": "",
+        "email": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2020-06-22T06:49:56Z",
+        "groups": [
+            [
+                "Developer"
+            ]
+        ],
+        "user_permissions": []
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "505m6zysywv9wfxj7tnr84patvm0g635",
+    "fields": {
+        "session_data": "MzUxYmE3ZmJkOGU1NmNiYjgyOTdhM2I3NjhhZmUxZmVkMTY4N2ZiOTp7Il9hdXRoX3VzZXJfaWQiOiI1IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIzMDA3YTk3NDM3ZTRiNzQ3NWM4NmJiZTAxNzczZjBhNjc5N2Q1ZWJjIn0=",
+        "expire_date": "2020-07-06T06:52:13.497Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "a8pfdbqmsgvop8pks64bh1eq6xjhk73a",
+    "fields": {
+        "session_data": "NmEyYzBmMDU3YjdiZjViZTRhNzFlNjQ5NGRjMWUyZTIwODBhMjU3ODp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI2MDA2ZjcwYWRmNTE1YmQxODVmZDZiM2ZiZjc3MzBiMDNlMDUyOGVhIn0=",
+        "expire_date": "2020-07-03T14:38:00.183Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "evdksrgwjx7tqzf64cqx05vnfvz5nibk",
+    "fields": {
+        "session_data": "NmEyYzBmMDU3YjdiZjViZTRhNzFlNjQ5NGRjMWUyZTIwODBhMjU3ODp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI2MDA2ZjcwYWRmNTE1YmQxODVmZDZiM2ZiZjc3MzBiMDNlMDUyOGVhIn0=",
+        "expire_date": "2020-07-06T14:43:27.298Z"
+    }
+},
+{
+    "model": "slack_integration.slackapplication",
+    "pk": 1,
+    "fields": {
+        "name": "my_app",
+        "signing_secret": "831a600e05807ae7ac95a657b29c1a5d",
+        "bot_user_oauth_access_token": "xoxb-1170480791172-1155630447063-MpXItRwQKN8Mu8CZtq7B382q"
+    }
+},
+{
+    "model": "slack_integration.slackapplication",
+    "pk": 3,
+    "fields": {
+        "name": "asd",
+        "signing_secret": "faaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "bot_user_oauth_access_token": "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+    }
+},
+{
+    "model": "slack_integration.slackapplication",
+    "pk": 4,
+    "fields": {
+        "name": "sad",
+        "signing_secret": "faaaaaaaaaaaasaaaaaaaaaaaaaaaaaa",
+        "bot_user_oauth_access_token": "ggggggggasggggggggggggggggggggggggggggggggggggggggggggggg"
+    }
+},
+{
+    "model": "slack_integration.template",
+    "pk": 1,
+    "fields": {
+        "application": 1,
+        "name": "my_template",
+        "channel_name": "C014MGW6QUE",
+        "message_text": "Template message text testing.",
+        "fallback_text": "Fallback text is here"
+    }
+},
+{
+    "model": "slack_integration.template",
+    "pk": 5,
+    "fields": {
+        "application": 3,
+        "name": "fsd",
+        "channel_name": "asd",
+        "message_text": "wqe",
+        "fallback_text": "fa"
+    }
+},
+{
+    "model": "slack_integration.actionsblock",
+    "pk": 22,
+    "fields": {
+        "template": 1,
+        "block_id": "dsf"
+    }
+},
+{
+    "model": "slack_integration.button",
+    "pk": 35,
+    "fields": {
+        "actions_block": 22,
+        "action_id": "rer",
+        "text": "qwe"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+        "action_time": "2020-06-19T09:21:14.575Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "auth",
+            "group"
+        ],
+        "object_id": "1",
+        "object_repr": "Admin",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 2,
+    "fields": {
+        "action_time": "2020-06-19T11:04:27.170Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "auth",
+            "user"
+        ],
+        "object_id": "1",
+        "object_repr": "adm",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Superuser status\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 3,
+    "fields": {
+        "action_time": "2020-06-19T11:10:19.179Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "auth",
+            "user"
+        ],
+        "object_id": "2",
+        "object_repr": "tester",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Groups\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 4,
+    "fields": {
+        "action_time": "2020-06-19T11:15:57.822Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "auth",
+            "user"
+        ],
+        "object_id": "2",
+        "object_repr": "tester",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"User permissions\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 5,
+    "fields": {
+        "action_time": "2020-06-19T11:17:01.915Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "auth",
+            "user"
+        ],
+        "object_id": "2",
+        "object_repr": "tester",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"User permissions\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 6,
+    "fields": {
+        "action_time": "2020-06-19T12:57:36.884Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "authtoken",
+            "token"
+        ],
+        "object_id": "85ce8e42a0ea85f04432cb562a0537ee1828b713",
+        "object_repr": "85ce8e42a0ea85f04432cb562a0537ee1828b713",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 7,
+    "fields": {
+        "action_time": "2020-06-19T12:57:42.593Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "authtoken",
+            "token"
+        ],
+        "object_id": "85ce8e42a0ea85f04432cb562a0537ee1828b713",
+        "object_repr": "85ce8e42a0ea85f04432cb562a0537ee1828b713",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 8,
+    "fields": {
+        "action_time": "2020-06-19T12:57:55.978Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "auth",
+            "group"
+        ],
+        "object_id": "2",
+        "object_repr": "Developer",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 9,
+    "fields": {
+        "action_time": "2020-06-19T12:58:16.267Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "auth",
+            "user"
+        ],
+        "object_id": "3",
+        "object_repr": "tester2",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Groups\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 10,
+    "fields": {
+        "action_time": "2020-06-22T06:47:56.233Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "auth",
+            "user"
+        ],
+        "object_id": "2",
+        "object_repr": "tester",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 11,
+    "fields": {
+        "action_time": "2020-06-22T06:47:56.242Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "auth",
+            "user"
+        ],
+        "object_id": "3",
+        "object_repr": "tester2",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 12,
+    "fields": {
+        "action_time": "2020-06-22T06:50:06.840Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "auth",
+            "user"
+        ],
+        "object_id": "4",
+        "object_repr": "admin",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Groups\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 13,
+    "fields": {
+        "action_time": "2020-06-22T06:50:14.629Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "auth",
+            "user"
+        ],
+        "object_id": "5",
+        "object_repr": "dev",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Groups\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 14,
+    "fields": {
+        "action_time": "2020-06-22T06:50:19.412Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "auth",
+            "user"
+        ],
+        "object_id": "5",
+        "object_repr": "dev",
+        "action_flag": 2,
+        "change_message": "[]"
+    }
+}
+]

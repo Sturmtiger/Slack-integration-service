@@ -156,7 +156,14 @@ REST_FRAMEWORK = {
     ]
 }
 
-# Debug toolbar
-DEBUG_TOOLBAR_CONFIG = {
-    'SHOW_TOOLBAR_CALLBACK': lambda request: True if DEBUG else False,
-}
+# # Debug toolbar
+INTERNAL_IPS = list()
+import socket
+
+# tricks to have debug toolbar when developing with docker
+ip = socket.gethostbyname(socket.gethostname())
+INTERNAL_IPS += [ip[:-1] + '1']
+
+# DEBUG_TOOLBAR_CONFIG = {
+#     'SHOW_TOOLBAR_CALLBACK': lambda request: True if DEBUG else False,
+# }
