@@ -5,3 +5,10 @@
     docker-compose up
 
 **Attention**! Docker and docker-compose must be installed on your system.
+
+## Users:
+| nickname | password |   type   |
+| -------- | -------- | -------- |
+| adm      | adm      |superuser |
+| admin | admin | administrator|
+|dev|dev|developer|
