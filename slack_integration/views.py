@@ -3,19 +3,20 @@ from django.http import HttpResponseRedirect
 from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.db import transaction
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import (PermissionRequiredMixin,
+                                        LoginRequiredMixin)
 
 from .models import SlackApplication, Template, ActionsBlock, Button
 from .formsets import BaseButtonFormSet
 
 
-class AppListView(generic.ListView):
+class AppListView(LoginRequiredMixin, generic.ListView):
     model = SlackApplication
     template_name = 'slack_integration/list/app.html'
     context_object_name = 'applications'
 
 
-class AppDetailView(generic.DetailView):
+class AppDetailView(LoginRequiredMixin, generic.DetailView):
     model = SlackApplication
     template_name = 'slack_integration/detail/app.html'
     context_object_name = 'app'
@@ -100,7 +101,7 @@ class CreateTemplateView(PermissionRequiredMixin, generic.CreateView):
         return next_url
 
 
-class TemplateDetailView(generic.DetailView):
+class TemplateDetailView(LoginRequiredMixin, generic.DetailView):
     model = Template
     template_name = 'slack_integration/detail/template.html'
     context_object_name = 'template'
@@ -197,7 +198,7 @@ class CreateActionsBlockView(PermissionRequiredMixin, generic.CreateView):
         return next_url
 
 
-class ActionsBlockDetailView(generic.DetailView):
+class ActionsBlockDetailView(LoginRequiredMixin, generic.DetailView):
     model = ActionsBlock
     template_name = 'slack_integration/detail/actions_block.html'
     context_object_name = 'actions_block'
