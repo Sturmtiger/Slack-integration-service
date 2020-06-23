@@ -41,3 +41,9 @@ class Button(models.Model):
     action_id = models.CharField(max_length=255)
     text = models.CharField(max_length=75)
     # value = models.CharField(max_length=2000)  # needed?
+
+    class Meta:
+        unique_together = (
+            ('actions_block', 'action_id'),
+            ('actions_block', 'text'),
+        )

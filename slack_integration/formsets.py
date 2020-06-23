@@ -9,7 +9,6 @@ class BaseButtonFormSet(BaseModelFormSet):
         checked_buttons_data = []
 
         for form in self.forms:
-            print(form.cleaned_data)
             if form.cleaned_data == {}:
                 continue
 
@@ -21,6 +20,7 @@ class BaseButtonFormSet(BaseModelFormSet):
                     if button[field] == value:
                         raise ValidationError(
                             'Buttons must have different data. '
-                            'Field "%s" is duplicated.' % field)
+                            'Field "%s" is duplicated.'
+                            % field.replace('_', ' ').capitalize())
 
             checked_buttons_data.append(form.cleaned_data)
