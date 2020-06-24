@@ -50,6 +50,15 @@ class PostSlackMessageConstructor:
             raise ObjectDoesNotExist(
                 'This application does not have a template with this name.')
 
+    def _get_application_object(self):
+        try:
+            app_obj = SlackApplication.objects.get(name=self.app_name)
+            return app_obj
+
+        except ObjectDoesNotExist:
+            raise ObjectDoesNotExist(
+                'Application with this name does not exist.')
+
     def _get_actions_block(self):
         if hasattr(self.template_obj, 'actions_block'):
             actions_block_obj = self.template_obj.actions_block
@@ -76,15 +85,6 @@ class PostSlackMessageConstructor:
         ]
 
         return buttons
-
-    def _get_application_object(self):
-        try:
-            app_obj = SlackApplication.objects.get(name=self.app_name)
-            return app_obj
-
-        except ObjectDoesNotExist:
-            raise ObjectDoesNotExist(
-                'Application with this name does not exist.')
 
     def _get_concated_message(self):
         """
