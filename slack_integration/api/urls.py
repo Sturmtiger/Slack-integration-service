@@ -3,5 +3,6 @@ from .views import CreateUpdateDestroySlackMessageView
 
 
 urlpatterns = [
-    path('slack-message/', CreateUpdateDestroySlackMessageView.as_view()),
+    path('slack-message/', CreateUpdateDestroySlackMessageView.as_view(),
+         name='slack-message'),
 ]

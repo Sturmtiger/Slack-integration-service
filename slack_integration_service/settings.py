@@ -156,7 +156,7 @@ REST_FRAMEWORK = {
     ]
 }
 
-# # Debug toolbar
+# Debug toolbar
 INTERNAL_IPS = list()
 import socket
 
