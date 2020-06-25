@@ -1,8 +1,10 @@
 from django.urls import path
-from .views import CreateUpdateDestroySlackMessageView
+from .views import (CreateUpdateDestroySlackMessageView,
+                    InteractivityProcessingView)
 
 
 urlpatterns = [
-    path('slack-message/', CreateUpdateDestroySlackMessageView.as_view(),
+    path('message/', CreateUpdateDestroySlackMessageView.as_view(),
          name='slack-message'),
+    path('interactivity/', InteractivityProcessingView.as_view()),
 ]

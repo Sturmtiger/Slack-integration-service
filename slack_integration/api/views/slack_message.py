@@ -4,11 +4,14 @@ from slack.errors import SlackApiError
 
 from slack_integration.models import SlackApplication
 
-from .serializers import (PostMessageSerializer, UpdateMessageSerializer,
-                          DeleteMessageSerializer)
-from .slack_message_constructors import (PostSlackMessageConstructor,
-                                         UpdateSlackMessageConstructor)
-from .slack_connector import WebClient
+from slack_integration.api.serializers import (PostMessageSerializer,
+                                               UpdateMessageSerializer,
+                                               DeleteMessageSerializer)
+from slack_integration.api.slack_message_constructors import (
+                                PostSlackMessageConstructor,
+                                UpdateSlackMessageConstructor
+                                )
+from slack_integration.api.slack_connector import WebClient
 
 
 class CreateUpdateDestroySlackMessageView(APIView):
