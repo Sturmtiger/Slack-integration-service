@@ -1,2 +1,3 @@
 from .slack_message import CreateUpdateDestroySlackMessageView
 from .slack_interactivity import InteractivityProcessingView
+from .slack_events import SlackEventsView

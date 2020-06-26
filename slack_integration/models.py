@@ -40,7 +40,7 @@ class Button(models.Model):
                                       related_name='buttons')
     action_id = models.CharField(max_length=255)
     text = models.CharField(max_length=75)
-    # value = models.CharField(max_length=2000)  # needed?
+    # value = models.TextField(max_length=2000)  # needed?
 
     class Meta:
         unique_together = (

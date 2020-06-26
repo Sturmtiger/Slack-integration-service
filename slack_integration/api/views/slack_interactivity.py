@@ -14,7 +14,7 @@ class InteractivityProcessingView(APIView):
         More info:
         https://api.slack.com/apps/A014KJFJ7KR/interactive-messages
         """
-        data = request.data
         # in progress
+        print('INTERACTIVITY')
         print(request.data['payload'])
         return Response(status=200)
