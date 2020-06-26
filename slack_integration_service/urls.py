@@ -15,20 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.conf import settings
 
 from rest_framework.authtoken.views import obtain_auth_token
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('users/', include('users.urls')),
-    path('', include('slack_integration.urls')),
-    path('api/slack/', include('slack_integration.api.urls')),
+    path('api/', include('slack_integration.api.urls')),
     path('api/token-auth/', obtain_auth_token),
 ]
-
-if settings.DEBUG:
-    import debug_toolbar
-    urlpatterns = [
-        path('__debug__/', include(debug_toolbar.urls)),
-    ] + urlpatterns

@@ -1,17 +1,27 @@
+from rest_framework.permissions import AllowAny
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+from slack import WebClient
 from slack.errors import SlackApiError
 
 from slack_integration.models import SlackApplication
 
 from slack_integration.api.serializers import (PostMessageSerializer,
                                                UpdateMessageSerializer,
-                                               DeleteMessageSerializer)
+                                               DeleteMessageSerializer,
+                                               SlackApplicationSerializer,)
 from slack_integration.api.slack_message_constructors import (
                                 PostSlackMessageConstructor,
-                                UpdateSlackMessageConstructor
+                                UpdateSlackMessageConstructor,
                                 )
-from slack_integration.api.slack_connector import WebClient
+
+
+class SlackApplicationViewSet(ModelViewSet):
+    queryset = SlackApplication.objects.all()
+    serializer_class = SlackApplicationSerializer
+    # in progress
 
 
 class CreateUpdateDestroySlackMessageView(APIView):
@@ -76,3 +86,31 @@ class CreateUpdateDestroySlackMessageView(APIView):
 
         return Response(slack_response.data,
                         status=slack_response.status_code)
+
+
+class InteractivityProcessingView(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        """
+        Receives payload of interactions with shortcuts, modals,
+        or interactive components from Slack.
+
+        More info:
+        https://api.slack.com/apps/A014KJFJ7KR/interactive-messages
+        """
+        # in progress
+        print('INTERACTIVITY')
+        print(request.data['payload'])
+        return Response(status=200)
+
+
+class SlackEventsView(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        # in progress
+        data = request.data
+        print('EVENT')
+        print(request.data)
+        return Response(status=200, data=data)

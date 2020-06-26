@@ -8,12 +8,10 @@ verify_ssl = true
 [packages]
 django = "*"
 psycopg2-binary = "*"
-django-crispy-forms = "*"
 djangorestframework = "*"
 slackclient = "*"
 flake8 = "*"
 pylint = "*"
-django-debug-toolbar = "*"
 coverage = "*"
 
 [requires]

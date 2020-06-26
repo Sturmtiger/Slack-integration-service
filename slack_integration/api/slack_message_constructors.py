@@ -1,6 +1,8 @@
 from django.core.exceptions import ObjectDoesNotExist
 
-from ..models import SlackApplication, Template
+from slack_integration.exceptions import (SlackApplicationNotFound,
+                                          TemplateNotFound)
+from ..models import SlackApplication, Template, ActionsBlock
 
 
 class PostSlackMessageConstructor:
@@ -42,25 +44,21 @@ class PostSlackMessageConstructor:
         app_obj = self._get_application_object()
 
         try:
-            template_obj = Template.objects.get(application=app_obj,
-                                                name=self.template_name)
-            return template_obj
-
+            return Template.objects.get(application=app_obj,
+                                        name=self.template_name)
         except ObjectDoesNotExist:
-            raise ObjectDoesNotExist(
+            raise TemplateNotFound(
                 'This application does not have a template with this name.')
 
     def _get_application_object(self):
         try:
-            app_obj = SlackApplication.objects.get(name=self.app_name)
-            return app_obj
-
-        except ObjectDoesNotExist:
-            raise ObjectDoesNotExist(
+            return SlackApplication.objects.get(name=self.app_name)
+        except ObjectDoesNotExist as e:
+            raise SlackApplicationNotFound(
                 'Application with this name does not exist.')
 
     def _get_actions_block(self):
-        if hasattr(self.template_obj, 'actions_block'):
+        if ActionsBlock.objects.filter(template=self.template_obj).exists():
             actions_block_obj = self.template_obj.actions_block
 
             actions_block = {
@@ -69,8 +67,6 @@ class PostSlackMessageConstructor:
                 'elements': self._get_buttons(actions_block_obj)
             }
             return actions_block
-
-        return None
 
     def _get_buttons(self, actions_block):
         buttons = [

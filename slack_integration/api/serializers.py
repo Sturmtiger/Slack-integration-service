@@ -1,6 +1,13 @@
-from rest_framework.serializers import Serializer, ValidationError
+from rest_framework.serializers import (Serializer, ModelSerializer,
+                                        ValidationError)
 from rest_framework import fields
 from slack_integration.models import SlackApplication, Template
+
+
+class SlackApplicationSerializer(ModelSerializer):
+    class Meta:
+        model = SlackApplication
+        fields = ('id', 'name',)
 
 
 class PostMessageSerializer(Serializer):

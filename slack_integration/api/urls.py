@@ -1,6 +1,8 @@
 from django.urls import path
+from rest_framework.routers import DefaultRouter
+
 from .views import (CreateUpdateDestroySlackMessageView, SlackEventsView,
-                    InteractivityProcessingView)
+                    InteractivityProcessingView, SlackApplicationViewSet,)
 
 
 urlpatterns = [
@@ -9,3 +11,8 @@ urlpatterns = [
     path('interactivity/', InteractivityProcessingView.as_view()),
     path('events/', SlackEventsView.as_view()),
 ]
+
+router = DefaultRouter()
+router.register('applications', SlackApplicationViewSet)
+
+urlpatterns += router.urls
