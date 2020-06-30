@@ -1,37 +1,92 @@
 from rest_framework.permissions import AllowAny
-from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
+from rest_framework import permissions
 
 from slack import WebClient
 from slack.errors import SlackApiError
 
-from slack_integration.models import SlackApplication
+from slack_integration import models
 
-from slack_integration.api.serializers import (PostMessageSerializer,
-                                               UpdateMessageSerializer,
-                                               DeleteMessageSerializer,
-                                               SlackApplicationSerializer,)
+from slack_integration.api import serializers
 from slack_integration.api.slack_message_constructors import (
                                 PostSlackMessageConstructor,
                                 UpdateSlackMessageConstructor,
                                 )
+from .permissions import IsAdmin, IsDeveloper
 
 
 class SlackApplicationViewSet(ModelViewSet):
-    queryset = SlackApplication.objects.all()
-    serializer_class = SlackApplicationSerializer
-    # in progress
+    queryset = models.SlackApplication.objects.all()
+    serializer_class = serializers.SlackApplicationSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return serializers.SlackApplicationListSerializer
+
+        return self.serializer_class
+
+    def get_permissions(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            permissions_classes = (IsAdmin | IsDeveloper,)
+        else:
+            permissions_classes = (IsAdmin,)
+        return (permission() for permission in permissions_classes)
+
+
+class TemplateViewSet(ModelViewSet):
+    queryset = models.Template.objects.all()
+    serializer_class = serializers.TemplateSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return serializers.TemplateListSerializer
+
+        return self.serializer_class
+
+    def get_permissions(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            permissions_classes = (IsAdmin | IsDeveloper,)
+        else:
+            permissions_classes = (IsAdmin,)
+        return (permission() for permission in permissions_classes)
+
+
+class ActionsBlockViewSet(ModelViewSet):
+    queryset = models.ActionsBlock.objects.all()
+    serializer_class = serializers.ActionsBlockSerializer
+
+    def get_permissions(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            permissions_classes = (IsAdmin | IsDeveloper,)
+        else:
+            permissions_classes = (IsAdmin,)
+        return (permission() for permission in permissions_classes)
+
+
+class ButtonViewSet(ModelViewSet):
+    queryset = models.Button.objects.all()
+    serializer_class = serializers.ButtonSerializer
+
+    def get_permissions(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            permissions_classes = (IsAdmin | IsDeveloper,)
+        else:
+            permissions_classes = (IsAdmin,)
+        return (permission() for permission in permissions_classes)
 
 
 class CreateUpdateDestroySlackMessageView(APIView):
     """
     Works with the Slack API. Delegates requests to Slack API.
     """
+    permission_classes = (IsDeveloper,)
+
     def post(self, request):
-        serializer = PostMessageSerializer(data=request.data)
+        serializer = serializers.PostMessageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        app_obj = SlackApplication.objects.get(
+        app_obj = models.SlackApplication.objects.get(
             name=serializer.validated_data['app_name'])
 
         slack_web_client = WebClient(token=app_obj.bot_user_oauth_access_token)
@@ -49,9 +104,9 @@ class CreateUpdateDestroySlackMessageView(APIView):
                         status=slack_response.status_code)
 
     def put(self, request):
-        serializer = UpdateMessageSerializer(data=request.data)
+        serializer = serializers.UpdateMessageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        app_obj = SlackApplication.objects.get(
+        app_obj = models.SlackApplication.objects.get(
             name=serializer.validated_data['app_name'])
 
         slack_web_client = WebClient(token=app_obj.bot_user_oauth_access_token)
@@ -69,9 +124,9 @@ class CreateUpdateDestroySlackMessageView(APIView):
                         status=slack_response.status_code)
 
     def delete(self, request):
-        serializer = DeleteMessageSerializer(data=request.data)
+        serializer = serializers.DeleteMessageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        app_obj = SlackApplication.objects.get(
+        app_obj = models.SlackApplication.objects.get(
             name=serializer.validated_data['app_name'])
 
         slack_web_client = WebClient(token=app_obj.bot_user_oauth_access_token)
@@ -112,5 +167,5 @@ class SlackEventsView(APIView):
         # in progress
         data = request.data
         print('EVENT')
-        print(request.data)
+        print(data)
         return Response(status=200, data=data)
