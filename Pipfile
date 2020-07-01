@@ -13,6 +13,8 @@ slackclient = "*"
 flake8 = "*"
 pylint = "*"
 coverage = "*"
+django-filter = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"

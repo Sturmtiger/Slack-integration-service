@@ -60,13 +60,17 @@ class PostSlackMessageConstructor:
     def _get_actions_block(self):
         if ActionsBlock.objects.filter(template=self.template_obj).exists():
             actions_block_obj = self.template_obj.actions_block
+            buttons = self._get_buttons(actions_block_obj)
 
-            actions_block = {
-                'block_id': actions_block_obj.block_id,
-                'type': 'actions',
-                'elements': self._get_buttons(actions_block_obj)
-            }
-            return actions_block
+            # Do not return an empty `action block` if
+            # there are no `buttons`.
+            if buttons:
+                actions_block = {
+                    'block_id': actions_block_obj.block_id,
+                    'type': 'actions',
+                    'elements': buttons
+                }
+                return actions_block
 
     def _get_buttons(self, actions_block):
         buttons = [

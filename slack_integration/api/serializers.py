@@ -18,11 +18,23 @@ class SlackApplicationListSerializer(serializers.ModelSerializer):
 
 
 class TemplateSerializer(serializers.ModelSerializer):
+    actions_block = serializers.IntegerField(read_only=True,
+                                             source='actions_block.pk')
 
     class Meta:
         model = Template
         fields = ('application', 'id', 'channel_name', 'name',
-                  'message_text', 'fallback_text', 'actions_block',)
+                  'message_text', 'fallback_text', 'actions_block',
+                  'thread_subscription', 'endpoint')
+
+    def validate(self, attrs):
+        errors = {}
+        if attrs['thread_subscription'] and not attrs['endpoint']:
+            errors['endpoint'] = 'Endpoint is required when ' \
+                                 '`thread_subscription` field is true'
+            raise serializers.ValidationError(errors)
+
+        return attrs
 
 
 class TemplateListSerializer(serializers.ModelSerializer):
@@ -37,7 +49,17 @@ class ActionsBlockSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ActionsBlock
-        fields = ('application', 'template', 'id', 'block_id',)
+        fields = ('application', 'template', 'id', 'block_id',
+                  'action_subscription', 'endpoint')
+
+    def validate(self, attrs):
+        errors = {}
+        if attrs['action_subscription'] and not attrs['endpoint']:
+            errors['endpoint'] = 'Endpoint is required when ' \
+                                 '`action_subscription` field is true'
+            raise serializers.ValidationError(errors)
+
+        return attrs
 
 
 class ButtonSerializer(serializers.ModelSerializer):

@@ -155,6 +155,14 @@
 },
 {
     "model": "sessions.session",
+    "pk": "20nmfd3vbmu0spp3dhodtoj57314cwan",
+    "fields": {
+        "session_data": "NmEyYzBmMDU3YjdiZjViZTRhNzFlNjQ5NGRjMWUyZTIwODBhMjU3ODp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI2MDA2ZjcwYWRmNTE1YmQxODVmZDZiM2ZiZjc3MzBiMDNlMDUyOGVhIn0=",
+        "expire_date": "2020-07-15T12:17:43.589Z"
+    }
+},
+{
+    "model": "sessions.session",
     "pk": "505m6zysywv9wfxj7tnr84patvm0g635",
     "fields": {
         "session_data": "MzUxYmE3ZmJkOGU1NmNiYjgyOTdhM2I3NjhhZmUxZmVkMTY4N2ZiOTp7Il9hdXRoX3VzZXJfaWQiOiI1IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIzMDA3YTk3NDM3ZTRiNzQ3NWM4NmJiZTAxNzczZjBhNjc5N2Q1ZWJjIn0=",
@@ -175,6 +183,16 @@
     "fields": {
         "session_data": "NmEyYzBmMDU3YjdiZjViZTRhNzFlNjQ5NGRjMWUyZTIwODBhMjU3ODp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI2MDA2ZjcwYWRmNTE1YmQxODVmZDZiM2ZiZjc3MzBiMDNlMDUyOGVhIn0=",
         "expire_date": "2020-07-06T14:43:27.298Z"
+    }
+},
+{
+    "model": "authtoken.token",
+    "pk": "f2ca854d3160343b6c29e0129ae6a2ea7f79a7dc",
+    "fields": {
+        "user": [
+            "dev"
+        ],
+        "created": "2020-07-01T12:01:03.081Z"
     }
 },
 {
@@ -212,7 +230,9 @@
         "name": "my_template",
         "channel_name": "C014MGW6QUE",
         "message_text": "Template message text testing.",
-        "fallback_text": "Fallback text is here"
+        "fallback_text": "Fallback text is here",
+        "thread_subscription": false,
+        "endpoint": ""
     }
 },
 {
@@ -223,7 +243,38 @@
         "name": "fsd",
         "channel_name": "asd",
         "message_text": "wqe",
-        "fallback_text": "fa"
+        "fallback_text": "fa",
+        "thread_subscription": false,
+        "endpoint": ""
+    }
+},
+{
+    "model": "slack_integration.template",
+    "pk": 7,
+    "fields": {
+        "application": 1,
+        "name": "fsdfsdf",
+        "channel_name": "asdasd",
+        "message_text": "vxcvxcv",
+        "fallback_text": "adasdasd",
+        "thread_subscription": true,
+        "endpoint": "https://postman-echo.com/post"
+    }
+},
+{
+    "model": "slack_integration.messagetimestamp",
+    "pk": 1,
+    "fields": {
+        "template": 1,
+        "ts": "1593606523.001500"
+    }
+},
+{
+    "model": "slack_integration.messagetimestamp",
+    "pk": 2,
+    "fields": {
+        "template": 1,
+        "ts": "1593608041.001800"
     }
 },
 {
@@ -231,7 +282,9 @@
     "pk": 22,
     "fields": {
         "template": 1,
-        "block_id": "dsf"
+        "block_id": "dsf",
+        "action_subscription": false,
+        "endpoint": ""
     }
 },
 {
@@ -493,6 +546,24 @@
         "object_repr": "dev",
         "action_flag": 2,
         "change_message": "[]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 15,
+    "fields": {
+        "action_time": "2020-07-01T12:19:47.610Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "slack_integration",
+            "template"
+        ],
+        "object_id": "1",
+        "object_repr": "Template object (1)",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Thread subscription\", \"Endpoint\"]}}]"
     }
 }
 ]

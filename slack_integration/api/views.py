@@ -1,8 +1,13 @@
+import json
+
+import requests
+
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import permissions
+from rest_framework import status
 
 from slack import WebClient
 from slack.errors import SlackApiError
@@ -97,6 +102,16 @@ class CreateUpdateDestroySlackMessageView(APIView):
 
         try:
             slack_response = slack_web_client.chat_postMessage(**message)
+            template = models.Template.objects.filter(
+                thread_subscription=True,
+                name=request.data['template_name'])
+            if template.exists():
+                # if template subs flag is True, create a MessageTimeStamp
+                # instance to track the thread for the message.
+                template_obj = template.get()
+                message_ts = slack_response.data['ts']
+                models.MessageTimeStamp.objects.create(template=template_obj,
+                                                       ts=message_ts)
         except SlackApiError as e:
             slack_response = e.response
 
@@ -150,13 +165,23 @@ class InteractivityProcessingView(APIView):
         """
         Receives payload of interactions with shortcuts, modals,
         or interactive components from Slack.
-
-        More info:
-        https://api.slack.com/apps/A014KJFJ7KR/interactive-messages
         """
-        # in progress
-        print('INTERACTIVITY')
-        print(request.data['payload'])
+        payload = request.data['payload']
+        unpacked_interactivity_payload = json.loads(payload)
+        block_id = unpacked_interactivity_payload['actions'][0].get('block_id')
+
+        if block_id:
+            actions_block = models.ActionsBlock.objects.filter(
+                                            action_subscription=True,
+                                            block_id=block_id,)
+
+            # if a block_id is not None, then there was an interaction
+            # with any button from the actions block
+            if actions_block.exists():
+                endpoint = actions_block.get().endpoint
+                # Q:should be asynchronous?
+                requests.post(endpoint, json=request.data)
+
         return Response(status=200)
 
 
@@ -164,8 +189,19 @@ class SlackEventsView(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request):
-        # in progress
         data = request.data
-        print('EVENT')
-        print(data)
-        return Response(status=200, data=data)
+        thread_ts = data.get('event').get('thread_ts')
+
+        # if an event is a thread message, the thread_ts is not None.
+        if thread_ts:
+            # get a template if its thread subs flag is True
+            # and an object with the corresponding thread_ts exists.
+            template = models.Template.objects.filter(
+                        thread_subscription=True,
+                        message_timestamps__ts=thread_ts)
+            if template.exists():
+                template_endpoint = template.get().endpoint
+                # Q:should be asynchronous?
+                requests.post(template_endpoint, json=data)
+
+        return Response(status=status.HTTP_200_OK, data=request.data)
