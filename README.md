@@ -12,3 +12,4 @@
 | adm      | adm      |superuser |
 | admin | admin | administrator|
 |dev|dev|developer|
+|simple|simple| not a member of any groups|

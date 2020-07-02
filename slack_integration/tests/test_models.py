@@ -87,6 +87,13 @@ class ActionsBlockModelTest(TestCase):
             ActionsBlock.objects.create(template=self.template,
                                         block_id='second_id')
 
+    def test_actions_block_block_id_is_unique(self):
+        ActionsBlock.objects.create(template=self.template,
+                                    block_id='first_id')
+        with self.assertRaises(IntegrityError):
+            ActionsBlock.objects.create(template=self.template,
+                                        block_id='first_id')
+
 
 class ButtonModelTest(TestCase):
     @classmethod

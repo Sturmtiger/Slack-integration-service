@@ -108,6 +108,7 @@ class CreateUpdateDestroySlackMessageView(APIView):
             if template.exists():
                 # if template subs flag is True, create a MessageTimeStamp
                 # instance to track the thread for the message.
+                # Q:should be asynchronous?
                 template_obj = template.get()
                 message_ts = slack_response.data['ts']
                 models.MessageTimeStamp.objects.create(template=template_obj,
