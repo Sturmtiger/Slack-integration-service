@@ -98,7 +98,7 @@
     "model": "auth.user",
     "fields": {
         "password": "pbkdf2_sha256$180000$mZOIHEHbW51q$KUhaxNliTtb/icRL/XT8aHySIiVA6crJdWYCZDX5Gjc=",
-        "last_login": "2020-06-22T14:43:27.290Z",
+        "last_login": "2020-07-02T11:31:51.292Z",
         "is_superuser": true,
         "username": "adm",
         "first_name": "",
@@ -154,6 +154,23 @@
     }
 },
 {
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$180000$U8b1PrhzKknx$gYa5AfSVWK/UISoZVC7Z4UgyKMfhUbR/1X+tW2NCo5Y=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "simple",
+        "first_name": "",
+        "last_name": "",
+        "email": "",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2020-07-02T11:20:02.961Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
     "model": "sessions.session",
     "pk": "20nmfd3vbmu0spp3dhodtoj57314cwan",
     "fields": {
@@ -183,6 +200,24 @@
     "fields": {
         "session_data": "NmEyYzBmMDU3YjdiZjViZTRhNzFlNjQ5NGRjMWUyZTIwODBhMjU3ODp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI2MDA2ZjcwYWRmNTE1YmQxODVmZDZiM2ZiZjc3MzBiMDNlMDUyOGVhIn0=",
         "expire_date": "2020-07-06T14:43:27.298Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "i73woi2bki8bhqrxx7oqjy717risu2vw",
+    "fields": {
+        "session_data": "NmEyYzBmMDU3YjdiZjViZTRhNzFlNjQ5NGRjMWUyZTIwODBhMjU3ODp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI2MDA2ZjcwYWRmNTE1YmQxODVmZDZiM2ZiZjc3MzBiMDNlMDUyOGVhIn0=",
+        "expire_date": "2020-07-16T11:31:51.294Z"
+    }
+},
+{
+    "model": "authtoken.token",
+    "pk": "ba76f1ba6bf5500a4b028ed945d0ab012c9e0abd",
+    "fields": {
+        "user": [
+            "admin"
+        ],
+        "created": "2020-07-02T12:31:37.081Z"
     }
 },
 {
@@ -231,8 +266,8 @@
         "channel_name": "C014MGW6QUE",
         "message_text": "Template message text testing.",
         "fallback_text": "Fallback text is here",
-        "thread_subscription": false,
-        "endpoint": ""
+        "thread_subscription": true,
+        "endpoint": "https://postman-echo.com/post"
     }
 },
 {
