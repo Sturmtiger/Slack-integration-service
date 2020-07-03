@@ -123,5 +123,5 @@ class UpdateMessageSerializer(PostMessageSerializer):
 
 class DeleteMessageSerializer(serializers.Serializer):
     app_name = fields.CharField()
-    channel = fields.CharField()
+    channel_id = fields.CharField()
     ts = fields.CharField()

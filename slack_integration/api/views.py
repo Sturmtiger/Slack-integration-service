@@ -150,7 +150,7 @@ class CreateUpdateDestroySlackMessageView(APIView):
         try:
             data = serializer.validated_data
             slack_response = slack_web_client.chat_delete(
-                channel=data['channel'],
+                channel=data['channel_id'],
                 ts=data['ts'])
         except SlackApiError as e:
             slack_response = e.response
