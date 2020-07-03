@@ -45,29 +45,31 @@ class TemplateViewSetTest(ViewSetActionsMixin, APITestCase):
         'valid_data': {
             'application': SlackApplication.objects.last().pk,
             'name': 'some_template',
-            'channel_name': 'C32141CDE',
+            'channel_id': 'C32141CDE',
             'message_text': 'Some message text',
             'fallback_text': 'Some fallback text',
             'thread_subscription': True,
             'endpoint': 'https://postman-echo.com/post'
         },
         'valid_data_patch': {
-            'thread_subscription': True
+            'thread_subscription': True,
+            'endpoint': 'https://postman-echo.com/post'
         },
+        'invalid_data_patch': {
+            'thread_subscription': True,
+            'endpoint': ''
+        }
     }
 
-    # DOESNT WORK
+    # # DOESNT WORK
     # def test_subs_is_false_when_endpoint_is_empty(self):
     #     user = User.objects.get(username='admin')
     #     token = Token.objects.get_or_create(user=user)[0]
     #     self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
     #
-    #     data = {
-    #         'thread_subscription': True,
-    #         'endpoint': 'https://postman-echo.com/post'
-    #     }
-    #     self.client.patch(self.retrieve_url, data)
-    #     self.client.patch(self.retrieve_url, {'endpoint': ''})
+    #     self.client.patch(self.retrieve_url, self.data['valid_data_patch'])
+    #     self.client.patch(self.retrieve_url, self.data['invalid_data_patch'])
+    #
     #     self.assertEqual(self.object.thread_subscription, False)
 
 
@@ -91,7 +93,7 @@ class ActionsBlockViewSetTest(ViewSetActionsMixin, APITestCase):
         },
     }
 
-    def test_template_cannot_have_more_than_1_actions_block(self):
+    def test_template_cannot_have_more_than_one_actions_block(self):
         user = User.objects.get(username='admin')
         token = Token.objects.get_or_create(user=user)[0]
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
@@ -116,7 +118,7 @@ class ButtonViewSetTest(ViewSetActionsMixin, APITestCase):
     data = {
         # for POST and PUT methods
         'valid_data': {
-            'actions_block': ActionsBlock.objects.last().pk,
+            'actions_block': ActionsBlock.objects.first().pk,
             'action_id': 'g3Fq5gdvz',
             'text': 'button text'
         },

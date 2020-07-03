@@ -17,7 +17,7 @@ class PostSlackMessageConstructor:
 
     def get_message_payload(self):
         message = {
-            'channel': self.template_obj.channel_name,
+            'channel': self.template_obj.channel_id,
             # 'text' works as fallback
             'text': self.template_obj.fallback_text,
             'blocks': [

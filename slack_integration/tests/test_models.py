@@ -34,28 +34,28 @@ class TemplateModelTest(TestCase):
     def test_unique_template_name_with_same_app(self):
         Template.objects.create(application=self.app1,
                                 name='template_name',
-                                channel_name='channel',
+                                channel_id='channel',
                                 message_text='asasasas',
                                 fallback_text='sadasdas')
 
         with self.assertRaises(IntegrityError):
             Template.objects.create(application=self.app1,
                                     name='template_name',
-                                    channel_name='channel',
+                                    channel_id='channel',
                                     message_text='asasasas',
                                     fallback_text='sadasdas')
 
     def test_different_apps_can_have_templates_with_same_name(self):
         Template.objects.create(application=self.app1,
                                 name='template_name',
-                                channel_name='channel',
+                                channel_id='channel',
                                 message_text='asasasas',
                                 fallback_text='sadasdas')
 
         try:
             Template.objects.create(application=self.app2,
                                     name='template_name',
-                                    channel_name='channel',
+                                    channel_id='channel',
                                     message_text='asasasas',
                                     fallback_text='sadasdas')
         except IntegrityError:
@@ -75,7 +75,7 @@ class ActionsBlockModelTest(TestCase):
         cls.template = Template.objects.create(
             application=cls.app,
             name='template_name',
-            channel_name='channel',
+            channel_id='channel',
             message_text='asasasas',
             fallback_text='sadasdas')
 
@@ -105,7 +105,7 @@ class ButtonModelTest(TestCase):
             bot_user_oauth_access_token='111')
         cls.template = Template.objects.create(application=cls.app,
                                                name='template_name',
-                                               channel_name='channel',
+                                               channel_id='channel',
                                                message_text='asasasas',
                                                fallback_text='sadasdas')
         cls.actions_block = ActionsBlock.objects.create(template=cls.template,

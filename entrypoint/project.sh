@@ -3,7 +3,7 @@
 HOST=0.0.0.0
 PORT=7777
 
-python3 manage.py makemigrations
-python3 manage.py migrate
-python3 manage.py loaddata dump.json
-python3 manage.py runserver "$HOST":"$PORT"
+python manage.py makemigrations
+python manage.py migrate
+python manage.py loaddata dump.json
+python manage.py runserver "$HOST":"$PORT"

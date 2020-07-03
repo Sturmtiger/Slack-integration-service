@@ -23,34 +23,24 @@ class TemplateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Template
-        fields = ('application', 'id', 'channel_name', 'name',
+        fields = ('application', 'id', 'channel_id', 'name',
                   'message_text', 'fallback_text', 'actions_block',
                   'thread_subscription', 'endpoint')
 
     def validate(self, attrs):
-        errors = {}
-
         request_method = self.context['request'].method
 
-        thread_subscription = attrs.get('thread_subscription')
         endpoint = attrs.get('endpoint')
 
-        # In case if a user erases the endpoint when
-        # `thread_subscription` is True
-        if thread_subscription is None and endpoint == '':
+        if endpoint == '':
             attrs['thread_subscription'] = False
+        if endpoint is None:
+            if request_method == 'POST':
+                attrs['thread_subscription'] = False
+            elif (request_method in ['PUT', 'PATCH'] and not
+                    self.instance.endpoint):
+                attrs['thread_subscription'] = False
 
-        elif thread_subscription is True and not endpoint:
-            if request_method in ['PATCH', 'PUT']:
-                if not self.instance.endpoint:
-                    errors['endpoint'] = 'Endpoint cannot be empty when ' \
-                                         '`thread_subscription` field is true'
-            elif request_method == 'POST':
-                errors['endpoint'] = 'Endpoint is required when ' \
-                                 '`thread_subscription` field is true'
-
-        if errors:
-            raise serializers.ValidationError(errors)
         return attrs
 
 
@@ -70,29 +60,19 @@ class ActionsBlockSerializer(serializers.ModelSerializer):
                   'action_subscription', 'endpoint')
 
     def validate(self, attrs):
-        errors = {}
-
         request_method = self.context['request'].method
 
-        action_subscription = attrs.get('action_subscription')
         endpoint = attrs.get('endpoint')
 
-        # In case if a user erases the endpoint when
-        # `action_subscription` is True
-        if action_subscription is None and endpoint == '':
+        if endpoint == '':
             attrs['action_subscription'] = False
+        if endpoint is None:
+            if request_method == 'POST':
+                attrs['action_subscription'] = False
+            elif (request_method in ['PUT', 'PATCH'] and not
+                    self.instance.endpoint):
+                attrs['action_subscription'] = False
 
-        elif action_subscription is True and not endpoint:
-            if request_method in ['PATCH', 'PUT']:
-                if not self.instance.endpoint:
-                    errors['endpoint'] = 'Endpoint cannot be empty when ' \
-                                         '`action_subscription` field is true'
-            elif request_method == 'POST':
-                errors['endpoint'] = 'Endpoint is required when ' \
-                                 '`action_subscription` field is true'
-
-        if errors:
-            raise serializers.ValidationError(errors)
         return attrs
 
 

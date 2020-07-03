@@ -19,7 +19,7 @@ class Template(models.Model):
                                     on_delete=models.CASCADE,
                                     related_name='templates')
     name = models.CharField(max_length=50)
-    channel_name = models.CharField(max_length=15)
+    channel_id = models.CharField(max_length=15)
     message_text = models.TextField()
     fallback_text = models.CharField(max_length=255)
     thread_subscription = models.BooleanField(default=False)
