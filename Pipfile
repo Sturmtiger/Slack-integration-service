@@ -15,6 +15,9 @@ pylint = "*"
 coverage = "*"
 django-filter = "*"
 requests = "*"
+django-celery-beat = "*"
+celery = "*"
+redis = "*"
 
 [requires]
 python_version = "3.7"

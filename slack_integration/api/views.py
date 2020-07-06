@@ -9,6 +9,8 @@ from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework import status
 
+from django_celery_beat.models import CrontabSchedule, PeriodicTask
+
 from slack import WebClient
 from slack.errors import SlackApiError
 
@@ -57,6 +59,16 @@ class TemplateViewSet(ModelViewSet):
             permissions_classes = (IsAdmin,)
         return (permission() for permission in permissions_classes)
 
+    # def create(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     self.perform_create(serializer)
+    #     headers = self.get_success_headers(serializer.data)
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    #
+    # def perform_create(self, serializer):
+    #     serializer.save()
+
 
 class ActionsBlockViewSet(ModelViewSet):
     queryset = models.ActionsBlock.objects.all()
@@ -91,10 +103,11 @@ class CreateUpdateDestroySlackMessageView(APIView):
     def post(self, request):
         serializer = serializers.PostMessageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        app_obj = models.SlackApplication.objects.get(
-            name=serializer.validated_data['app_name'])
+        token = models.SlackApplication.objects.get(
+                    name=serializer.validated_data['app_name']
+                ).bot_user_oauth_access_token
 
-        slack_web_client = WebClient(token=app_obj.bot_user_oauth_access_token)
+        slack_web_client = WebClient(token=token)
 
         message_constructor = PostSlackMessageConstructor(
             **serializer.validated_data)

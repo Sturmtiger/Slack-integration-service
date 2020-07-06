@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_celery_beat',
     'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
@@ -144,3 +145,7 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 15,
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
+
+# celery
+CELERY_BROKER_URL = os.environ.get('REDIS') + '/0'
+CELERY_RESULT_BACKEND = os.environ.get('REDIS') + '/1'

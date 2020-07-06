@@ -11,7 +11,9 @@ class PostSlackMessageConstructor:
     def __init__(self, **kwargs):
         self.app_name = kwargs['app_name']
         self.template_name = kwargs['template_name']
-        self.message_text = kwargs['text']
+        # the message_text may be unnecessary
+        # e.g. when posting scheduled tasks by Celery
+        self.message_text = kwargs.get('text')
 
         self.template_obj = self._get_template_object()
 
@@ -90,9 +92,11 @@ class PostSlackMessageConstructor:
         """
         Concatenates the sent message with the template message.
         """
-        completed_message = (f"{self.template_obj.message_text}\n\n"
-                             f"{self.message_text}")
-        return completed_message
+        if self.message_text:
+            return (f"{self.template_obj.message_text}\n\n"
+                    f"{self.message_text}")
+
+        return self.template_obj.message_text
 
 
 class UpdateSlackMessageConstructor(PostSlackMessageConstructor):
