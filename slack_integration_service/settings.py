@@ -116,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Kiev'
 
 USE_I18N = True
 
@@ -139,7 +139,7 @@ REST_FRAMEWORK = {
     #     'rest_framework.renderers.JSONRenderer',
     # ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 15,
@@ -149,3 +149,4 @@ REST_FRAMEWORK = {
 # celery
 CELERY_BROKER_URL = os.environ.get('REDIS') + '/0'
 CELERY_RESULT_BACKEND = os.environ.get('REDIS') + '/1'
+CELERY_TIMEZONE = 'Europe/Kiev'

@@ -9,6 +9,7 @@ urlpatterns = [
          name='slack-message'),
     path('interactivity/', views.InteractivityProcessingView.as_view()),
     path('events/', views.SlackEventsView.as_view()),
+    path('templates/<pk>/crontab/', views.TemplateCrontabView.as_view()),
 ]
 
 router = DefaultRouter()

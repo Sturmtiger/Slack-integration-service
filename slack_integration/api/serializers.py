@@ -1,7 +1,11 @@
+from django.conf import settings
+
 from rest_framework import serializers
 from rest_framework import fields
 from slack_integration.models import (SlackApplication, Template,
                                       ActionsBlock, Button,)
+
+from django_celery_beat.models import CrontabSchedule
 
 
 class SlackApplicationSerializer(serializers.ModelSerializer):
@@ -125,3 +129,14 @@ class DeleteMessageSerializer(serializers.Serializer):
     app_name = fields.CharField()
     channel_id = fields.CharField()
     ts = fields.CharField()
+
+
+class CrontabScheduleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CrontabSchedule
+        fields = ('minute', 'hour', 'day_of_week',
+                  'day_of_month', 'month_of_year')
+
+    def create(self, validated_data):
+        validated_data['timezone'] = settings.TIME_ZONE
+        return CrontabSchedule.objects.get_or_create(**validated_data)[0]

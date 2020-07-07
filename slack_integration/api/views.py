@@ -4,12 +4,13 @@ import requests
 
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
+from rest_framework import generics
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework import status
 
-from django_celery_beat.models import CrontabSchedule, PeriodicTask
+from django_celery_beat.models import PeriodicTask
 
 from slack import WebClient
 from slack.errors import SlackApiError
@@ -22,6 +23,8 @@ from slack_integration.api.slack_message_constructors import (
                                 UpdateSlackMessageConstructor,
                                 )
 from .permissions import IsAdmin, IsDeveloper
+from .custom_view_mixins import (RetrieveMixin, UpdateMixin,
+                                 CreateMixin, DestroyMixin)
 
 
 class SlackApplicationViewSet(ModelViewSet):
@@ -59,15 +62,58 @@ class TemplateViewSet(ModelViewSet):
             permissions_classes = (IsAdmin,)
         return (permission() for permission in permissions_classes)
 
-    # def create(self, request, *args, **kwargs):
-    #     serializer = self.get_serializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     self.perform_create(serializer)
-    #     headers = self.get_success_headers(serializer.data)
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-    #
-    # def perform_create(self, serializer):
-    #     serializer.save()
+
+class TemplateCrontabView(RetrieveMixin,
+                          UpdateMixin,
+                          CreateMixin,
+                          DestroyMixin,
+                          generics.GenericAPIView):
+    serializer_class = serializers.CrontabScheduleSerializer
+    queryset = models.Template.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, *kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def _get_periodic_task_obj_if_exists(self, template_obj):
+        app_name, template_name = self._get_periodic_task_name_data(
+                                    template_obj).values()
+
+        periodic_task = PeriodicTask.objects.filter(
+                            name='%s : %s' % (app_name, template_name))
+        if periodic_task.exists():
+            return periodic_task.get()
+
+    def _get_crontab_obj_if_periodic_task_exists(self, template_obj):
+        periodic_task = self._get_periodic_task_obj_if_exists(template_obj)
+
+        if periodic_task:
+            return periodic_task.crontab
+
+    def _get_periodic_task_name_data(self, template_obj) -> dict:
+        app_name = template_obj.application.name
+        template_name = template_obj.name
+
+        return {'app_name': app_name,
+                'template_name': template_name}
+
+    def get_permissions(self):
+        if self.request.method in permissions.SAFE_METHODS:
+            permissions_classes = (IsAdmin | IsDeveloper,)
+        else:
+            permissions_classes = (IsAdmin,)
+        return (permission() for permission in permissions_classes)
 
 
 class ActionsBlockViewSet(ModelViewSet):

@@ -18,4 +18,5 @@ def post_message(app_name, template_name):
                             template_name=template_name)
     message = message_constructor.get_message_payload()
 
-    slack_web_client.chat_postMessage(**message)
+    response = slack_web_client.chat_postMessage(**message)
+    return response.status_code
