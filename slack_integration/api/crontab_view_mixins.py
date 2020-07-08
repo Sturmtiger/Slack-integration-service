@@ -32,10 +32,9 @@ class UpdateMixin(mixins.UpdateModelMixin):
         if not crontab_obj:
             error = {'crontab': 'crontab for this template does not exist'}
             return Response(error, status=status.HTTP_404_NOT_FOUND)
-
         if partial:
             cron_data = model_to_dict(crontab_obj, exclude=('id', 'timezone'))
-            cron_data.update(**request.data)
+            cron_data.update(**request.data.dict())
             serializer = self.get_serializer(data=cron_data)
         else:
             serializer = self.get_serializer(data=request.data)
