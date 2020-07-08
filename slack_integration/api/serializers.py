@@ -12,7 +12,7 @@ class SlackApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = SlackApplication
         fields = ('id', 'name', 'signing_secret',
-                  'bot_user_oauth_access_token',)
+                  'bot_user_oauth_access_token', 'templates')
 
 
 class SlackApplicationListSerializer(serializers.ModelSerializer):
@@ -61,7 +61,7 @@ class ActionsBlockSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActionsBlock
         fields = ('application', 'template', 'id', 'block_id',
-                  'action_subscription', 'endpoint')
+                  'action_subscription', 'endpoint', 'buttons')
 
     def validate(self, attrs):
         request_method = self.context['request'].method
@@ -80,6 +80,15 @@ class ActionsBlockSerializer(serializers.ModelSerializer):
         return attrs
 
 
+class ActionsBlockListSerializer(serializers.ModelSerializer):
+    application = serializers.IntegerField(read_only=True,
+                                           source='template.application.pk')
+
+    class Meta:
+        model = ActionsBlock
+        fields = ('application', 'template', 'id', 'block_id')
+
+
 class ButtonSerializer(serializers.ModelSerializer):
     application = serializers.IntegerField(
         read_only=True,
@@ -91,7 +100,7 @@ class ButtonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Button
         fields = ('application', 'template', 'actions_block', 'id',
-                  'action_id', 'text',)
+                  'action_id', 'text')
 
 
 class PostMessageSerializer(serializers.Serializer):

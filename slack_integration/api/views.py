@@ -23,8 +23,8 @@ from slack_integration.api.slack_message_constructors import (
                                 UpdateSlackMessageConstructor,
                                 )
 from .permissions import IsAdmin, IsDeveloper
-from .custom_view_mixins import (RetrieveMixin, UpdateMixin,
-                                 CreateMixin, DestroyMixin)
+from .crontab_view_mixins import (RetrieveMixin, UpdateMixin,
+                                  CreateMixin, DestroyMixin)
 
 
 class SlackApplicationViewSet(ModelViewSet):
@@ -119,6 +119,12 @@ class TemplateCrontabView(RetrieveMixin,
 class ActionsBlockViewSet(ModelViewSet):
     queryset = models.ActionsBlock.objects.all()
     serializer_class = serializers.ActionsBlockSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return serializers.ActionsBlockListSerializer
+
+        return self.serializer_class
 
     def get_permissions(self):
         if self.request.method in permissions.SAFE_METHODS:
@@ -230,13 +236,13 @@ class InteractivityProcessingView(APIView):
         unpacked_interactivity_payload = json.loads(payload)
         block_id = unpacked_interactivity_payload['actions'][0].get('block_id')
 
+        # if a block_id is not None, then there was an interaction
+        # with any button from the actions block
         if block_id:
             actions_block = models.ActionsBlock.objects.filter(
                                             action_subscription=True,
                                             block_id=block_id,)
 
-            # if a block_id is not None, then there was an interaction
-            # with any button from the actions block
             if actions_block.exists():
                 endpoint = actions_block.get().endpoint
                 # Q:should be asynchronous?
