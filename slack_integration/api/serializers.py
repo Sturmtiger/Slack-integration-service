@@ -54,6 +54,17 @@ class TemplateListSerializer(serializers.ModelSerializer):
         fields = ('application', 'id', 'name',)
 
 
+class CrontabScheduleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CrontabSchedule
+        fields = ('minute', 'hour', 'day_of_week',
+                  'day_of_month', 'month_of_year')
+
+    def create(self, validated_data):
+        validated_data['timezone'] = settings.TIME_ZONE
+        return CrontabSchedule.objects.get_or_create(**validated_data)[0]
+
+
 class ActionsBlockSerializer(serializers.ModelSerializer):
     application = serializers.IntegerField(read_only=True,
                                            source='template.application.pk')
@@ -138,14 +149,3 @@ class DeleteMessageSerializer(serializers.Serializer):
     app_name = fields.CharField()
     channel_id = fields.CharField()
     ts = fields.CharField()
-
-
-class CrontabScheduleSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CrontabSchedule
-        fields = ('minute', 'hour', 'day_of_week',
-                  'day_of_month', 'month_of_year')
-
-    def create(self, validated_data):
-        validated_data['timezone'] = settings.TIME_ZONE
-        return CrontabSchedule.objects.get_or_create(**validated_data)[0]

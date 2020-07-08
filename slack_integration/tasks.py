@@ -1,7 +1,7 @@
 from slack import WebClient
 
 from slack_integration_service.celery import app
-from slack_integration.models import Template, SlackApplication
+from slack_integration.models import SlackApplication
 from slack_integration.api.slack_message_constructors \
     import PostSlackMessageConstructor
 
@@ -19,4 +19,5 @@ def post_message(app_name, template_name):
     message = message_constructor.get_message_payload()
 
     response = slack_web_client.chat_postMessage(**message)
+
     return response.status_code

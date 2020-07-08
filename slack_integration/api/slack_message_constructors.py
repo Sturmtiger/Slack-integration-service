@@ -11,7 +11,7 @@ class PostSlackMessageConstructor:
     def __init__(self, **kwargs):
         self.app_name = kwargs['app_name']
         self.template_name = kwargs['template_name']
-        # the message_text may be unnecessary
+        # the `message_text` may be unnecessary
         # e.g. when posting scheduled tasks by Celery
         self.message_text = kwargs.get('text')
 
