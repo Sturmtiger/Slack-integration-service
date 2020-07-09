@@ -13,6 +13,9 @@ class SlackApplicationSerializer(serializers.ModelSerializer):
         model = SlackApplication
         fields = ('id', 'name', 'signing_secret',
                   'bot_user_oauth_access_token', 'templates')
+        extra_kwargs = {
+            'templates': {'read_only': True},
+        }
 
 
 class SlackApplicationListSerializer(serializers.ModelSerializer):
@@ -73,6 +76,9 @@ class ActionsBlockSerializer(serializers.ModelSerializer):
         model = ActionsBlock
         fields = ('application', 'template', 'id', 'block_id',
                   'action_subscription', 'endpoint', 'buttons')
+        extra_kwargs = {
+            'buttons': {'read_only': True},
+        }
 
     def validate(self, attrs):
         request_method = self.context['request'].method
