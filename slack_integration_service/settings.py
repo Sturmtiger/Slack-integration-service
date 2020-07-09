@@ -135,11 +135,11 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
-    ],
+    # 'DEFAULT_RENDERER_CLASSES': [
+    #     'rest_framework.renderers.JSONRenderer',
+    # ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 15,
@@ -147,6 +147,6 @@ REST_FRAMEWORK = {
 }
 
 # celery
-CELERY_BROKER_URL = os.environ.get('REDIS') + '/0'
-CELERY_RESULT_BACKEND = os.environ.get('REDIS') + '/1'
+CELERY_BROKER_URL = os.environ.get('REDIS', 'redis://redis:6379') + '/0'
+CELERY_RESULT_BACKEND = os.environ.get('REDIS', 'redis://redis:6379') + '/1'
 CELERY_TIMEZONE = 'Europe/Kiev'

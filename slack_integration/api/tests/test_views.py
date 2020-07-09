@@ -49,20 +49,20 @@ class TemplateViewSetTest(ViewSetActionsMixin, APITestCase):
             'message_text': 'Some message text',
             'fallback_text': 'Some fallback text',
             'thread_subscription': True,
-            'endpoint': 'https://postman-echo.com/post'
+            'callback_url': 'https://postman-echo.com/post'
         },
         'valid_data_patch': {
             'thread_subscription': True,
-            'endpoint': 'https://postman-echo.com/post'
+            'callback_url': 'https://postman-echo.com/post'
         },
         'invalid_data_patch': {
             'thread_subscription': True,
-            'endpoint': ''
+            'callback_url': ''
         }
     }
 
     # # DOESNT WORK
-    # def test_subs_is_false_when_endpoint_is_empty(self):
+    # def test_subs_is_false_when_callback_url_is_empty(self):
     #     user = User.objects.get(username='admin')
     #     token = Token.objects.get_or_create(user=user)[0]
     #     self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
@@ -86,7 +86,7 @@ class ActionsBlockViewSetTest(ViewSetActionsMixin, APITestCase):
             'template': Template.objects.get(pk=7).pk,
             'block_id': 'some_block_id',
             'action_subscription': True,
-            'endpoint': 'https://postman-echo.com/post'
+            'callback_url': 'https://postman-echo.com/post'
         },
         'valid_data_patch': {
             'block_id': 'new_block_id'

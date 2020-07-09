@@ -211,6 +211,53 @@
     }
 },
 {
+    "model": "django_celery_beat.crontabschedule",
+    "pk": 1,
+    "fields": {
+        "minute": "0",
+        "hour": "4",
+        "day_of_week": "*",
+        "day_of_month": "*",
+        "month_of_year": "*",
+        "timezone": "Europe/Kiev"
+    }
+},
+{
+    "model": "django_celery_beat.periodictasks",
+    "pk": 1,
+    "fields": {
+        "last_update": "2020-07-09T14:09:25.316Z"
+    }
+},
+{
+    "model": "django_celery_beat.periodictask",
+    "pk": 1,
+    "fields": {
+        "name": "celery.backend_cleanup",
+        "task": "celery.backend_cleanup",
+        "interval": null,
+        "crontab": 1,
+        "solar": null,
+        "clocked": null,
+        "args": "[]",
+        "kwargs": "{}",
+        "queue": null,
+        "exchange": null,
+        "routing_key": null,
+        "headers": "{}",
+        "priority": null,
+        "expires": null,
+        "expire_seconds": 43200,
+        "one_off": false,
+        "start_time": null,
+        "enabled": true,
+        "last_run_at": null,
+        "total_run_count": 0,
+        "date_changed": "2020-07-09T14:09:25.318Z",
+        "description": ""
+    }
+},
+{
     "model": "authtoken.token",
     "pk": "ba76f1ba6bf5500a4b028ed945d0ab012c9e0abd",
     "fields": {
@@ -267,7 +314,7 @@
         "message_text": "Template message text testing.",
         "fallback_text": "Fallback text is here",
         "thread_subscription": true,
-        "endpoint": "https://postman-echo.com/post"
+        "callback_url": "https://postman-echo.com/post"
     }
 },
 {
@@ -280,7 +327,7 @@
         "message_text": "wqe",
         "fallback_text": "fa",
         "thread_subscription": false,
-        "endpoint": ""
+        "callback_url": ""
     }
 },
 {
@@ -293,7 +340,7 @@
         "message_text": "vxcvxcv",
         "fallback_text": "adasdasd",
         "thread_subscription": true,
-        "endpoint": ""
+        "callback_url": ""
     }
 },
 {
@@ -306,7 +353,7 @@
         "message_text": "qweqwe",
         "fallback_text": "asdasd",
         "thread_subscription": false,
-        "endpoint": ""
+        "callback_url": ""
     }
 },
 {
@@ -332,7 +379,7 @@
         "template": 1,
         "block_id": "dsf",
         "action_subscription": true,
-        "endpoint": "https://postman-echo.com/post"
+        "callback_url": "https://postman-echo.com/post"
     }
 },
 {
@@ -342,7 +389,7 @@
         "template": 7,
         "block_id": "sfsghh",
         "action_subscription": false,
-        "endpoint": ""
+        "callback_url": ""
     }
 },
 {
@@ -352,7 +399,7 @@
         "template": 8,
         "block_id": "Bbfwfdh",
         "action_subscription": false,
-        "endpoint": ""
+        "callback_url": ""
     }
 },
 {

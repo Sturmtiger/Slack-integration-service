@@ -41,10 +41,6 @@ class UpdateMixin(mixins.UpdateModelMixin):
             serializer = self.get_serializer(data=request.data)
 
         serializer.is_valid(raise_exception=True)
-        if serializer.validated_data == {}:
-            error = {'crontab': 'crontab fields are not specified'}
-            return Response(error, status=status.HTTP_400_BAD_REQUEST)
-
         self.perform_update(serializer)
 
         if getattr(instance, '_prefetched_objects_cache', None):
@@ -65,17 +61,14 @@ class UpdateMixin(mixins.UpdateModelMixin):
 
 class CreateMixin(mixins.CreateModelMixin):
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
         if self._get_periodic_task_obj_if_exists(self.get_object()):
             error = {'crontab': 'crontab for this template already exists'}
-            return Response(error, status=status.HTTP_403_FORBIDDEN)
-        if serializer.validated_data == {}:
-            error = {'crontab': 'crontab fields are not specified'}
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
+
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED,
                         headers=headers)
@@ -87,7 +80,7 @@ class CreateMixin(mixins.CreateModelMixin):
                                     self.get_object()).values()
         PeriodicTask.objects.create(
             crontab=schedule,
-            name='%s : %s' % (app_name, template_name),
+            name=f'{app_name} : {template_name}',
             task='slack_integration.tasks.post_message',
             kwargs=json.dumps({'app_name': app_name,
                                'template_name': template_name})

@@ -25,27 +25,27 @@ class SlackApplicationListSerializer(serializers.ModelSerializer):
 
 
 class TemplateSerializer(serializers.ModelSerializer):
-    actions_block = serializers.IntegerField(read_only=True,
-                                             source='actions_block.pk')
-
     class Meta:
         model = Template
         fields = ('application', 'id', 'channel_id', 'name',
                   'message_text', 'fallback_text', 'actions_block',
-                  'thread_subscription', 'endpoint')
+                  'thread_subscription', 'callback_url')
+        extra_kwargs = {
+            'actions_block': {'read_only': True},
+        }
 
     def validate(self, attrs):
         request_method = self.context['request'].method
 
-        endpoint = attrs.get('endpoint')
+        callback_url = attrs.get('callback_url')
 
-        if endpoint == '':
+        if callback_url == '':
             attrs['thread_subscription'] = False
-        if endpoint is None:
+        if callback_url is None:
             if request_method == 'POST':
                 attrs['thread_subscription'] = False
             elif (request_method in ['PUT', 'PATCH'] and not
-                    self.instance.endpoint):
+                    self.instance.callback_url):
                 attrs['thread_subscription'] = False
 
         return attrs
@@ -63,6 +63,13 @@ class CrontabScheduleSerializer(serializers.ModelSerializer):
         fields = ('minute', 'hour', 'day_of_week',
                   'day_of_month', 'month_of_year')
 
+    def validate(self, attrs):
+        if attrs == {}:
+            error = {'crontab': 'crontab fields are not specified'}
+            raise serializers.ValidationError(error)
+
+        return attrs
+
     def create(self, validated_data):
         validated_data['timezone'] = settings.TIME_ZONE
         return CrontabSchedule.objects.get_or_create(**validated_data)[0]
@@ -75,7 +82,7 @@ class ActionsBlockSerializer(serializers.ModelSerializer):
     class Meta:
         model = ActionsBlock
         fields = ('application', 'template', 'id', 'block_id',
-                  'action_subscription', 'endpoint', 'buttons')
+                  'action_subscription', 'callback_url', 'buttons')
         extra_kwargs = {
             'buttons': {'read_only': True},
         }
@@ -83,15 +90,15 @@ class ActionsBlockSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         request_method = self.context['request'].method
 
-        endpoint = attrs.get('endpoint')
+        callback_url = attrs.get('callback_url')
 
-        if endpoint == '':
+        if callback_url == '':
             attrs['action_subscription'] = False
-        if endpoint is None:
+        if callback_url is None:
             if request_method == 'POST':
                 attrs['action_subscription'] = False
             elif (request_method in ['PUT', 'PATCH'] and not
-                    self.instance.endpoint):
+                    self.instance.callback_url):
                 attrs['action_subscription'] = False
 
         return attrs
