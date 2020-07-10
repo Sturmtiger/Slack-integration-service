@@ -10,12 +10,12 @@ from .slack_message_constructors import (PostSlackMessageConstructor,
 
 
 class CustomSlackWebClient:
-    def __init__(self, app_name, template_name=None, channel_id=None):
-        self.app_name = app_name
-        self.template_name = template_name
+    def __init__(self, app_obj, template_obj=None, channel_id=None):
+        self.app_obj = app_obj
+        self.template_obj = template_obj
         self.channel_id = channel_id
 
-        self._prepare_data()
+        self._make_connection()
 
     def post_message(self, message_text=None):
         post_message_constructor = PostSlackMessageConstructor(
@@ -67,24 +67,6 @@ class CustomSlackWebClient:
             models.MessageTimeStamp.objects.create(
                 template=self.template_obj,
                 ts=message_ts)
-
-    def _prepare_data(self):
-        self._prepare_objects()
-        self._make_connection()
-
-    def _prepare_objects(self):
-        self._prepare_application_obj()
-        if self.template_name:
-            self._prepare_template_obj()
-
-    def _prepare_application_obj(self):
-        self.app_obj = get_object_or_404(models.SlackApplication,
-                                         name=self.app_name)
-
-    def _prepare_template_obj(self):
-        self.template_obj = get_object_or_404(models.Template,
-                                              name=self.template_name,
-                                              application=self.app_obj)
 
     def _make_connection(self):
         token = self.app_obj.bot_user_oauth_access_token

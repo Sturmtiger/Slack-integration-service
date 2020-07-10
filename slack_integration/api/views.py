@@ -1,6 +1,7 @@
 import json
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import get_object_or_404
 
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
@@ -68,11 +69,11 @@ class TemplateCrontabView(RetrieveMixin,
         return self.partial_update(request, *args, **kwargs)
 
     def _get_periodic_task_obj_if_exists(self, template_obj):
-        app_name, template_name = self._get_periodic_task_name_data(
+        app_id, template_id = self._get_periodic_task_name_data(
                                     template_obj).values()
         try:
             return PeriodicTask.objects.get(
-                     name=f'{app_name} : {template_name}')
+                name=f'app_id:{app_id}|template_id:{template_id}')
         except ObjectDoesNotExist:
             return None
 
@@ -83,11 +84,10 @@ class TemplateCrontabView(RetrieveMixin,
             return periodic_task.crontab
 
     def _get_periodic_task_name_data(self, template_obj):
-        app_name = template_obj.application.name
-        template_name = template_obj.name
+        app_id = template_obj.application.id
+        template_id = template_obj.id
 
-        return {'app_name': app_name,
-                'template_name': template_name}
+        return {'app_id': app_id, 'template_id': template_id}
 
 
 class ActionsBlockViewSet(AdminDeveloperPermissionsMixin,
@@ -117,9 +117,13 @@ class CreateUpdateDestroySlackMessageView(APIView):
 
         valid_data = serializer.validated_data
 
-        slack_web_client = CustomSlackWebClient(
-                               valid_data['app_name'],
-                               valid_data['template_name'])
+        app_obj = get_object_or_404(models.SlackApplication,
+                                    name=valid_data['app_name'])
+        template_obj = get_object_or_404(models.Template,
+                                         name=valid_data['template_name'],
+                                         application=app_obj)
+
+        slack_web_client = CustomSlackWebClient(app_obj, template_obj)
 
         slack_response = slack_web_client.post_message(valid_data['text'])
 
@@ -132,9 +136,13 @@ class CreateUpdateDestroySlackMessageView(APIView):
 
         valid_data = serializer.validated_data
 
-        slack_web_client = CustomSlackWebClient(
-                               valid_data['app_name'],
-                               valid_data['template_name'])
+        app_obj = get_object_or_404(models.SlackApplication,
+                                    name=valid_data['app_name'])
+        template_obj = get_object_or_404(models.Template,
+                                         name=valid_data['template_name'],
+                                         application=app_obj)
+
+        slack_web_client = CustomSlackWebClient(app_obj, template_obj)
 
         slack_response = slack_web_client.update_message(valid_data['text'],
                                                          valid_data['ts'])
@@ -148,8 +156,11 @@ class CreateUpdateDestroySlackMessageView(APIView):
 
         valid_data = serializer.validated_data
 
+        app_obj = get_object_or_404(models.SlackApplication,
+                                    name=valid_data['app_name'])
+
         slack_web_client = CustomSlackWebClient(
-                               valid_data['app_name'],
+                               app_obj,
                                channel_id=valid_data['channel_id'])
 
         slack_response = slack_web_client.delete_message(valid_data['ts'])

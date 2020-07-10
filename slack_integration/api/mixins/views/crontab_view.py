@@ -76,14 +76,14 @@ class CreateMixin(mixins.CreateModelMixin):
     @transaction.atomic
     def perform_create(self, serializer):
         schedule = serializer.save()
-        app_name, template_name = self._get_periodic_task_name_data(
-                                    self.get_object()).values()
+        app_id, template_id = self._get_periodic_task_name_data(
+                                  self.get_object()).values()
         PeriodicTask.objects.create(
             crontab=schedule,
-            name=f'{app_name} : {template_name}',
+            name=f'app_id:{app_id}|template_id:{template_id}',
             task='slack_integration.tasks.post_message',
-            kwargs=json.dumps({'app_name': app_name,
-                               'template_name': template_name})
+            kwargs=json.dumps({'app_id': app_id,
+                               'template_id': template_id})
         )
 
 
