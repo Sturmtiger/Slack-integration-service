@@ -1,21 +1,12 @@
 from django.core.exceptions import ObjectDoesNotExist
 
-from slack_integration.exceptions import (SlackApplicationNotFound,
-                                          TemplateNotFound)
-from ..models import SlackApplication, Template, ActionsBlock
-
 
 class PostSlackMessageConstructor:
     """Constructs the message for Slack API."""
 
-    def __init__(self, **kwargs):
-        self.app_name = kwargs['app_name']
-        self.template_name = kwargs['template_name']
-        # the `message_text` may be unnecessary
-        # e.g. when posting scheduled tasks by Celery
-        self.message_text = kwargs.get('text')
-
-        self.template_obj = self._get_template_object()
+    def __init__(self, template_obj, message_text=None):
+        self.template_obj = template_obj
+        self.message_text = message_text
 
     def get_message_payload(self):
         message = {
@@ -42,29 +33,12 @@ class PostSlackMessageConstructor:
 
         return message
 
-    def _get_template_object(self):
-        app_obj = self._get_application_object()
-
-        try:
-            return Template.objects.get(application=app_obj,
-                                        name=self.template_name)
-        except ObjectDoesNotExist:
-            raise TemplateNotFound(
-                'This application does not have a template with this name.')
-
-    def _get_application_object(self):
-        try:
-            return SlackApplication.objects.get(name=self.app_name)
-        except ObjectDoesNotExist as e:
-            raise SlackApplicationNotFound(
-                'Application with this name does not exist.')
-
     def _get_actions_block(self):
-        if ActionsBlock.objects.filter(template=self.template_obj).exists():
+        try:
             actions_block_obj = self.template_obj.actions_block
             buttons = self._get_buttons(actions_block_obj)
 
-            # Do not return an empty `action block` if
+            # Do not return the empty `action block` if
             # there are no `buttons`.
             if buttons:
                 actions_block = {
@@ -73,6 +47,9 @@ class PostSlackMessageConstructor:
                     'elements': buttons
                 }
                 return actions_block
+        # If the actions_block does not exist
+        except ObjectDoesNotExist:
+            return None
 
     def _get_buttons(self, actions_block):
         buttons = [
@@ -100,9 +77,9 @@ class PostSlackMessageConstructor:
 
 
 class UpdateSlackMessageConstructor(PostSlackMessageConstructor):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.ts = kwargs['ts']
+    def __init__(self, template_obj, message_text, ts):
+        super().__init__(template_obj, message_text)
+        self.ts = ts
 
     def get_message_payload(self):
         message = super().get_message_payload()

@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import serializers
 from rest_framework import fields
@@ -6,6 +7,8 @@ from slack_integration.models import (SlackApplication, Template,
                                       ActionsBlock, Button,)
 
 from django_celery_beat.models import CrontabSchedule
+
+from .mixins.serializers.validate import ValidateSubsCallbackUrlMixin
 
 
 class SlackApplicationSerializer(serializers.ModelSerializer):
@@ -24,7 +27,10 @@ class SlackApplicationListSerializer(serializers.ModelSerializer):
         fields = ('id', 'name',)
 
 
-class TemplateSerializer(serializers.ModelSerializer):
+class TemplateSerializer(ValidateSubsCallbackUrlMixin,
+                         serializers.ModelSerializer):
+    subs_field_name = 'thread_subscription'
+
     class Meta:
         model = Template
         fields = ('application', 'id', 'channel_id', 'name',
@@ -33,22 +39,6 @@ class TemplateSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'actions_block': {'read_only': True},
         }
-
-    def validate(self, attrs):
-        request_method = self.context['request'].method
-
-        callback_url = attrs.get('callback_url')
-
-        if callback_url == '':
-            attrs['thread_subscription'] = False
-        if callback_url is None:
-            if request_method == 'POST':
-                attrs['thread_subscription'] = False
-            elif (request_method in ['PUT', 'PATCH'] and not
-                    self.instance.callback_url):
-                attrs['thread_subscription'] = False
-
-        return attrs
 
 
 class TemplateListSerializer(serializers.ModelSerializer):
@@ -75,7 +65,10 @@ class CrontabScheduleSerializer(serializers.ModelSerializer):
         return CrontabSchedule.objects.get_or_create(**validated_data)[0]
 
 
-class ActionsBlockSerializer(serializers.ModelSerializer):
+class ActionsBlockSerializer(ValidateSubsCallbackUrlMixin,
+                             serializers.ModelSerializer):
+    subs_field_name = 'action_subscription'
+
     application = serializers.IntegerField(read_only=True,
                                            source='template.application.pk')
 
@@ -86,22 +79,6 @@ class ActionsBlockSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'buttons': {'read_only': True},
         }
-
-    def validate(self, attrs):
-        request_method = self.context['request'].method
-
-        callback_url = attrs.get('callback_url')
-
-        if callback_url == '':
-            attrs['action_subscription'] = False
-        if callback_url is None:
-            if request_method == 'POST':
-                attrs['action_subscription'] = False
-            elif (request_method in ['PUT', 'PATCH'] and not
-                    self.instance.callback_url):
-                attrs['action_subscription'] = False
-
-        return attrs
 
 
 class ActionsBlockListSerializer(serializers.ModelSerializer):
@@ -135,20 +112,18 @@ class PostMessageSerializer(serializers.Serializer):
     def validate(self, attrs):
         errors = dict()
 
-        app = SlackApplication.objects.filter(name=attrs['app_name'])
-        if not app.exists():
+        try:
+            app = SlackApplication.objects.get(name=attrs['app_name'])
+        except ObjectDoesNotExist:
             errors['app_name'] = 'Application with this name does not exist.'
+            raise serializers.ValidationError(errors)
 
         # In case the application is found
-        if not errors:
-            app = app.get()
-            template = Template.objects.filter(application=app,
-                                               name=attrs['template_name'])
-            if not template.exists():
-                errors['template_name'] = 'Template with this name ' \
-                                          'does not exist.'
-
-        if errors:
+        try:
+            Template.objects.get(application=app,
+                                 name=attrs['template_name'])
+        except ObjectDoesNotExist:
+            errors['template_name'] = 'Template with this name does not exist.'
             raise serializers.ValidationError(errors)
 
         return attrs

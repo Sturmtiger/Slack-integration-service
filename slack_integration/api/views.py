@@ -1,9 +1,6 @@
 import json
 
-import requests
-
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import get_object_or_404
 
 from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
@@ -14,17 +11,15 @@ from rest_framework import status
 
 from django_celery_beat.models import PeriodicTask
 
-from slack import WebClient
-from slack.errors import SlackApiError
-
 from slack_integration import models
+from slack_integration.tasks import post_request
 
 from . import serializers
 from .permissions import IsDeveloper
-from .mixins.get_permissions import AdminDeveloperPermissionsMixin
-from .mixins.get_serializer_class import GetSerializerClassListMixin
-from .mixins.crontab_view import (RetrieveMixin, UpdateMixin, CreateMixin,
-                                  DestroyMixin)
+from .mixins.views.get_permissions import AdminDeveloperPermissionsMixin
+from .mixins.views.get_serializer_class import GetSerializerClassListMixin
+from .mixins.views.crontab_view import (RetrieveMixin, UpdateMixin,
+                                        CreateMixin, DestroyMixin)
 from .slack_web_client import CustomSlackWebClient
 
 
@@ -119,28 +114,14 @@ class CreateUpdateDestroySlackMessageView(APIView):
     def post(self, request):
         serializer = serializers.PostMessageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        app_obj = get_object_or_404(models.SlackApplication,
-                                  name=serializer.validated_data['app_name'])
-        token = app_obj.bot_user_oauth_access_token
 
-        slack_web_client = CustomSlackWebClient(token)
+        valid_data = serializer.validated_data
 
-        try:
-            slack_response = slack_web_client.chat_postMessage(**message)
-            template = models.Template.objects.filter(
-                thread_subscription=True,
-                name=request.data['template_name'])
-            # !!! name and app are unique together.
-            # There is a mistake in the above code `template =`
-            if template.exists():
-                # if template subs flag is True, create a MessageTimeStamp
-                # instance to track the thread for the message.
-                template_obj = template.get()
-                message_ts = slack_response.data['ts']
-                models.MessageTimeStamp.objects.create(template=template_obj,
-                                                       ts=message_ts)
-        except SlackApiError as e:
-            slack_response = e.response
+        slack_web_client = CustomSlackWebClient(
+                               valid_data['app_name'],
+                               valid_data['template_name'])
+
+        slack_response = slack_web_client.post_message(valid_data['text'])
 
         return Response(slack_response.data,
                         status=slack_response.status_code)
@@ -148,19 +129,15 @@ class CreateUpdateDestroySlackMessageView(APIView):
     def put(self, request):
         serializer = serializers.UpdateMessageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        app_obj = models.SlackApplication.objects.get(
-            name=serializer.validated_data['app_name'])
 
-        slack_web_client = WebClient(token=app_obj.bot_user_oauth_access_token)
+        valid_data = serializer.validated_data
 
-        message_constructor = UpdateSlackMessageConstructor(
-            **serializer.validated_data)
-        message = message_constructor.get_message_payload()
+        slack_web_client = CustomSlackWebClient(
+                               valid_data['app_name'],
+                               valid_data['template_name'])
 
-        try:
-            slack_response = slack_web_client.chat_update(**message)
-        except SlackApiError as e:
-            slack_response = e.response
+        slack_response = slack_web_client.update_message(valid_data['text'],
+                                                         valid_data['ts'])
 
         return Response(slack_response.data,
                         status=slack_response.status_code)
@@ -168,18 +145,14 @@ class CreateUpdateDestroySlackMessageView(APIView):
     def delete(self, request):
         serializer = serializers.DeleteMessageSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        app_obj = models.SlackApplication.objects.get(
-            name=serializer.validated_data['app_name'])
 
-        slack_web_client = WebClient(token=app_obj.bot_user_oauth_access_token)
+        valid_data = serializer.validated_data
 
-        try:
-            data = serializer.validated_data
-            slack_response = slack_web_client.chat_delete(
-                channel=data['channel_id'],
-                ts=data['ts'])
-        except SlackApiError as e:
-            slack_response = e.response
+        slack_web_client = CustomSlackWebClient(
+                               valid_data['app_name'],
+                               channel_id=valid_data['channel_id'])
+
+        slack_response = slack_web_client.delete_message(valid_data['ts'])
 
         return Response(slack_response.data,
                         status=slack_response.status_code)
@@ -200,16 +173,16 @@ class InteractivityProcessingView(APIView):
         # if the block_id is not None, then there was an interaction
         # with any button from the actions block
         if block_id:
-            actions_block = models.ActionsBlock.objects.filter(
-                                            action_subscription=True,
-                                            block_id=block_id,)
+            try:
+                actions_block_obj = models.ActionsBlock.objects.get(
+                                        action_subscription=True,
+                                        block_id=block_id)
+                callback_url = actions_block_obj.callback_url
+                post_request.delay(callback_url, request.data)
+            except ObjectDoesNotExist:
+                pass
 
-            if actions_block.exists():
-                callback_url = actions_block.get().callback_url
-                # Q:should be asynchronous?
-                requests.post(callback_url, json=request.data)
-
-        return Response(status=200)
+        return Response(status=status.HTTP_200_OK)
 
 
 class SlackEventsView(APIView):
@@ -223,12 +196,13 @@ class SlackEventsView(APIView):
         if thread_ts:
             # get a template if its thread subs flag is True
             # and an object with the corresponding thread_ts exists.
-            template = models.Template.objects.filter(
-                        thread_subscription=True,
-                        message_timestamps__ts=thread_ts)
-            if template.exists():
-                template_callback_url = template.get().callback_url
-                # Q:should be asynchronous?
-                requests.post(template_callback_url, json=data)
+            try:
+                template_obj = models.Template.objects.get(
+                               thread_subscription=True,
+                               message_timestamps__ts=thread_ts)
+                callback_url = template_obj.callback_url
+                post_request.delay(callback_url, data)
+            except ObjectDoesNotExist:
+                pass
 
         return Response(status=status.HTTP_200_OK, data=request.data)
