@@ -1,5 +1,3 @@
-from django.shortcuts import get_object_or_404
-
 from slack import WebClient as SlackWebClient
 from slack.errors import SlackApiError
 

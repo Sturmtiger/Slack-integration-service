@@ -29,6 +29,7 @@ class SlackApplicationViewSet(AdminDeveloperPermissionsMixin,
                               ModelViewSet):
     queryset = models.SlackApplication.objects.all()
     serializer_class = serializers.SlackApplicationSerializer
+
     serializers_dict = {
         'list': serializers.SlackApplicationListSerializer,
     }
@@ -39,6 +40,7 @@ class TemplateViewSet(AdminDeveloperPermissionsMixin,
                       ModelViewSet):
     queryset = models.Template.objects.all()
     serializer_class = serializers.TemplateSerializer
+
     serializers_dict = {
         'list': serializers.TemplateListSerializer,
     }
@@ -95,6 +97,7 @@ class ActionsBlockViewSet(AdminDeveloperPermissionsMixin,
                           ModelViewSet):
     queryset = models.ActionsBlock.objects.all()
     serializer_class = serializers.ActionsBlockSerializer
+
     serializers_dict = {
         'list': serializers.ActionsBlockListSerializer,
     }
@@ -107,7 +110,8 @@ class ButtonViewSet(AdminDeveloperPermissionsMixin, ModelViewSet):
 
 class CreateUpdateDestroySlackMessageView(APIView):
     """
-    Works with the Slack API. Delegates requests to Slack API.
+    Works with the Slack API. Delegates requests to Slack API
+    and relays answers from it.
     """
     permission_classes = (IsDeveloper,)
 
@@ -200,6 +204,9 @@ class SlackEventsView(APIView):
     permission_classes = (AllowAny,)
 
     def post(self, request):
+        """
+        Receives events data from Slack.
+        """
         data = request.data
         thread_ts = data.get('event').get('thread_ts')
 

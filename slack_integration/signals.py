@@ -8,9 +8,12 @@ from django_celery_beat.models import PeriodicTask
 
 @receiver(pre_delete, sender=Template)
 def clear_periodic_tasks(sender, instance, **kwargs):
-    template_id = instance.id
+    """
+    If a template instance is deleting -
+    delete the associated PeriodicTask instance if it exists.
+    """
+    name_pattern = f'template_id:{instance.id}'
     try:
-        name_pattern = f'template_id:{template_id}'
         periodic_task = PeriodicTask.objects.get(name__endswith=name_pattern)
         periodic_task.delete()
     except ObjectDoesNotExist:

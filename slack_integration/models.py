@@ -32,7 +32,7 @@ class Template(models.Model):
 class MessageTimeStamp(models.Model):
     """
     The model storing message timestamps
-    for tracking messages from a thread.
+    for tracking messages from the thread.
     """
     template = models.ForeignKey(Template,
                                  on_delete=models.CASCADE,

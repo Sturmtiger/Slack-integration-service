@@ -12,7 +12,7 @@ from .mixins import ViewSetActionsMixin
 
 
 class SlackApplicationViewSetTest(ViewSetActionsMixin, APITestCase):
-    fixtures = ('dump.json',)
+    fixtures = ('test_dump.json',)
     model = SlackApplication
     object = model.objects.first()
     list_url = reverse('slackapplication-list')
@@ -34,7 +34,7 @@ class SlackApplicationViewSetTest(ViewSetActionsMixin, APITestCase):
 
 
 class TemplateViewSetTest(ViewSetActionsMixin, APITestCase):
-    fixtures = ('dump.json',)
+    fixtures = ('test_dump.json',)
     model = Template
     object = model.objects.first()
     list_url = reverse('template-list')
@@ -74,7 +74,7 @@ class TemplateViewSetTest(ViewSetActionsMixin, APITestCase):
 
 
 class ActionsBlockViewSetTest(ViewSetActionsMixin, APITestCase):
-    fixtures = ('dump.json',)
+    fixtures = ('test_dump.json',)
     model = ActionsBlock
     object = model.objects.first()
     list_url = reverse('actionsblock-list')
@@ -109,7 +109,7 @@ class ActionsBlockViewSetTest(ViewSetActionsMixin, APITestCase):
 
 
 class ButtonViewSetTest(ViewSetActionsMixin, APITestCase):
-    fixtures = ('dump.json',)
+    fixtures = ('test_dump.json',)
     model = Button
     object = model.objects.first()
     list_url = reverse('button-list')
@@ -129,7 +129,7 @@ class ButtonViewSetTest(ViewSetActionsMixin, APITestCase):
 
 
 class CreateUpdateDestroySlackMessageViewTest(APITestCase):
-    fixtures = ('dump.json',)
+    fixtures = ('test_dump.json',)
     tested_url = reverse('slack-message')
 
     def test_not_developer_does_not_have_access(self):
