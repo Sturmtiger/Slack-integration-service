@@ -65,12 +65,9 @@ class CrontabScheduleSerializer(serializers.ModelSerializer):
 
 
 class ActionsBlockBaseSerializer(serializers.ModelSerializer):
-    application = serializers.IntegerField(read_only=True,
-                                           source='template.application.pk')
-
     class Meta:
         model = ActionsBlock
-        fields = ('application', 'template', 'id', 'block_id')
+        fields = ('template', 'id', 'block_id')
 
 
 class ActionsBlockSerializer(ValidateSubsCallbackUrlMixin,
@@ -86,17 +83,13 @@ class ActionsBlockSerializer(ValidateSubsCallbackUrlMixin,
 
 
 class ButtonSerializer(serializers.ModelSerializer):
-    application = serializers.IntegerField(
-        read_only=True,
-        source='actions_block.template.application.pk')
     template = serializers.IntegerField(
         read_only=True,
         source='actions_block.template.pk')
 
     class Meta:
         model = Button
-        fields = ('application', 'template', 'actions_block', 'id',
-                  'action_id', 'text')
+        fields = ('template', 'actions_block', 'id', 'action_id', 'text')
 
 
 class PostMessageSerializer(serializers.Serializer):
