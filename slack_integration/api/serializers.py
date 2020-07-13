@@ -11,40 +11,39 @@ from django_celery_beat.models import CrontabSchedule
 from .mixins.serializers.validate import ValidateSubsCallbackUrlMixin
 
 
-class SlackApplicationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SlackApplication
-        fields = ('id', 'name', 'signing_secret',
-                  'bot_user_oauth_access_token', 'templates')
-        extra_kwargs = {
-            'templates': {'read_only': True},
-        }
-
-
-class SlackApplicationListSerializer(serializers.ModelSerializer):
+class SlackApplicationBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = SlackApplication
         fields = ('id', 'name',)
 
 
-class TemplateSerializer(ValidateSubsCallbackUrlMixin,
-                         serializers.ModelSerializer):
-    subs_field_name = 'thread_subscription'
-
-    class Meta:
-        model = Template
-        fields = ('application', 'id', 'channel_id', 'name',
-                  'message_text', 'fallback_text', 'actions_block',
-                  'thread_subscription', 'callback_url')
+class SlackApplicationSerializer(SlackApplicationBaseSerializer):
+    class Meta(SlackApplicationBaseSerializer.Meta):
+        fields = (SlackApplicationBaseSerializer.Meta.fields +
+                  ('signing_secret', 'bot_user_oauth_access_token',
+                   'templates'))
         extra_kwargs = {
-            'actions_block': {'read_only': True},
+            'templates': {'read_only': True},
         }
 
 
-class TemplateListSerializer(serializers.ModelSerializer):
+class TemplateBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Template
         fields = ('application', 'id', 'name',)
+
+
+class TemplateSerializer(ValidateSubsCallbackUrlMixin,
+                         TemplateBaseSerializer):
+    subs_field_name = 'thread_subscription'
+
+    class Meta(TemplateBaseSerializer.Meta):
+        fields = (TemplateBaseSerializer.Meta.fields +
+                  ('channel_id', 'message_text', 'fallback_text',
+                   'actions_block', 'thread_subscription', 'callback_url'))
+        extra_kwargs = {
+            'actions_block': {'read_only': True},
+        }
 
 
 class CrontabScheduleSerializer(serializers.ModelSerializer):
@@ -65,29 +64,25 @@ class CrontabScheduleSerializer(serializers.ModelSerializer):
         return CrontabSchedule.objects.get_or_create(**validated_data)[0]
 
 
-class ActionsBlockSerializer(ValidateSubsCallbackUrlMixin,
-                             serializers.ModelSerializer):
-    subs_field_name = 'action_subscription'
-
-    application = serializers.IntegerField(read_only=True,
-                                           source='template.application.pk')
-
-    class Meta:
-        model = ActionsBlock
-        fields = ('application', 'template', 'id', 'block_id',
-                  'action_subscription', 'callback_url', 'buttons')
-        extra_kwargs = {
-            'buttons': {'read_only': True},
-        }
-
-
-class ActionsBlockListSerializer(serializers.ModelSerializer):
+class ActionsBlockBaseSerializer(serializers.ModelSerializer):
     application = serializers.IntegerField(read_only=True,
                                            source='template.application.pk')
 
     class Meta:
         model = ActionsBlock
         fields = ('application', 'template', 'id', 'block_id')
+
+
+class ActionsBlockSerializer(ValidateSubsCallbackUrlMixin,
+                             ActionsBlockBaseSerializer):
+    subs_field_name = 'action_subscription'
+
+    class Meta(ActionsBlockBaseSerializer.Meta):
+        fields = (ActionsBlockBaseSerializer.Meta.fields +
+                  ('action_subscription', 'callback_url', 'buttons'))
+        extra_kwargs = {
+            'buttons': {'read_only': True},
+        }
 
 
 class ButtonSerializer(serializers.ModelSerializer):

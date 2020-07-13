@@ -31,7 +31,7 @@ class SlackApplicationViewSet(AdminDeveloperPermissionsMixin,
     serializer_class = serializers.SlackApplicationSerializer
 
     serializers_dict = {
-        'list': serializers.SlackApplicationListSerializer,
+        'list': serializers.SlackApplicationBaseSerializer,
     }
 
 
@@ -42,7 +42,7 @@ class TemplateViewSet(AdminDeveloperPermissionsMixin,
     serializer_class = serializers.TemplateSerializer
 
     serializers_dict = {
-        'list': serializers.TemplateListSerializer,
+        'list': serializers.TemplateBaseSerializer,
     }
 
 
@@ -99,7 +99,7 @@ class ActionsBlockViewSet(AdminDeveloperPermissionsMixin,
     serializer_class = serializers.ActionsBlockSerializer
 
     serializers_dict = {
-        'list': serializers.ActionsBlockListSerializer,
+        'list': serializers.ActionsBlockBaseSerializer,
     }
 
 
