@@ -12,7 +12,7 @@ from .mixins import ViewSetActionsMixin
 
 
 class SlackApplicationViewSetTest(ViewSetActionsMixin, APITestCase):
-    fixtures = ('dump.json',)
+    fixtures = ('test_dump.json',)
     model = SlackApplication
     object = model.objects.first()
     list_url = reverse('slackapplication-list')
@@ -34,7 +34,7 @@ class SlackApplicationViewSetTest(ViewSetActionsMixin, APITestCase):
 
 
 class TemplateViewSetTest(ViewSetActionsMixin, APITestCase):
-    fixtures = ('dump.json',)
+    fixtures = ('test_dump.json',)
     model = Template
     object = model.objects.first()
     list_url = reverse('template-list')
@@ -49,20 +49,20 @@ class TemplateViewSetTest(ViewSetActionsMixin, APITestCase):
             'message_text': 'Some message text',
             'fallback_text': 'Some fallback text',
             'thread_subscription': True,
-            'endpoint': 'https://postman-echo.com/post'
+            'callback_url': 'https://postman-echo.com/post'
         },
         'valid_data_patch': {
             'thread_subscription': True,
-            'endpoint': 'https://postman-echo.com/post'
+            'callback_url': 'https://postman-echo.com/post'
         },
         'invalid_data_patch': {
             'thread_subscription': True,
-            'endpoint': ''
+            'callback_url': ''
         }
     }
 
     # # DOESNT WORK
-    # def test_subs_is_false_when_endpoint_is_empty(self):
+    # def test_subs_is_false_when_callback_url_is_empty(self):
     #     user = User.objects.get(username='admin')
     #     token = Token.objects.get_or_create(user=user)[0]
     #     self.client.credentials(HTTP_AUTHORIZATION='Token ' + token.key)
@@ -74,7 +74,7 @@ class TemplateViewSetTest(ViewSetActionsMixin, APITestCase):
 
 
 class ActionsBlockViewSetTest(ViewSetActionsMixin, APITestCase):
-    fixtures = ('dump.json',)
+    fixtures = ('test_dump.json',)
     model = ActionsBlock
     object = model.objects.first()
     list_url = reverse('actionsblock-list')
@@ -86,7 +86,7 @@ class ActionsBlockViewSetTest(ViewSetActionsMixin, APITestCase):
             'template': Template.objects.get(pk=7).pk,
             'block_id': 'some_block_id',
             'action_subscription': True,
-            'endpoint': 'https://postman-echo.com/post'
+            'callback_url': 'https://postman-echo.com/post'
         },
         'valid_data_patch': {
             'block_id': 'new_block_id'
@@ -109,7 +109,7 @@ class ActionsBlockViewSetTest(ViewSetActionsMixin, APITestCase):
 
 
 class ButtonViewSetTest(ViewSetActionsMixin, APITestCase):
-    fixtures = ('dump.json',)
+    fixtures = ('test_dump.json',)
     model = Button
     object = model.objects.first()
     list_url = reverse('button-list')
@@ -129,7 +129,7 @@ class ButtonViewSetTest(ViewSetActionsMixin, APITestCase):
 
 
 class CreateUpdateDestroySlackMessageViewTest(APITestCase):
-    fixtures = ('dump.json',)
+    fixtures = ('test_dump.json',)
     tested_url = reverse('slack-message')
 
     def test_not_developer_does_not_have_access(self):

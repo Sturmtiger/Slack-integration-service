@@ -23,7 +23,7 @@ class Template(models.Model):
     message_text = models.TextField()
     fallback_text = models.CharField(max_length=255)
     thread_subscription = models.BooleanField(default=False)
-    endpoint = models.URLField(blank=True)
+    callback_url = models.URLField(blank=True)
 
     class Meta:
         unique_together = ('application', 'name')
@@ -32,12 +32,15 @@ class Template(models.Model):
 class MessageTimeStamp(models.Model):
     """
     The model storing message timestamps
-    for tracking messages from a thread.
+    for tracking messages from the thread.
     """
     template = models.ForeignKey(Template,
                                  on_delete=models.CASCADE,
                                  related_name='message_timestamps')
     ts = models.CharField(max_length=20)
+
+    class Meta:
+        unique_together = ('template', 'ts')
 
 
 class ActionsBlock(models.Model):
@@ -46,7 +49,7 @@ class ActionsBlock(models.Model):
                                     related_name='actions_block')
     block_id = models.CharField(max_length=255, unique=True)
     action_subscription = models.BooleanField(default=False)
-    endpoint = models.URLField(blank=True)
+    callback_url = models.URLField(blank=True)
 
 
 class Button(models.Model):
@@ -55,7 +58,6 @@ class Button(models.Model):
                                       related_name='buttons')
     action_id = models.CharField(max_length=255)
     text = models.CharField(max_length=75)
-    # value = models.TextField(max_length=2000)  # Q:needed?
 
     class Meta:
         unique_together = (

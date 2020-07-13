@@ -188,6 +188,14 @@
 },
 {
     "model": "sessions.session",
+    "pk": "53i8p8l2teql3f7tiw6tsy79lgfilazw",
+    "fields": {
+        "session_data": "NmEyYzBmMDU3YjdiZjViZTRhNzFlNjQ5NGRjMWUyZTIwODBhMjU3ODp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI2MDA2ZjcwYWRmNTE1YmQxODVmZDZiM2ZiZjc3MzBiMDNlMDUyOGVhIn0=",
+        "expire_date": "2020-07-24T17:53:21.274Z"
+    }
+},
+{
+    "model": "sessions.session",
     "pk": "a8pfdbqmsgvop8pks64bh1eq6xjhk73a",
     "fields": {
         "session_data": "NmEyYzBmMDU3YjdiZjViZTRhNzFlNjQ5NGRjMWUyZTIwODBhMjU3ODp7Il9hdXRoX3VzZXJfaWQiOiIxIiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiI2MDA2ZjcwYWRmNTE1YmQxODVmZDZiM2ZiZjc3MzBiMDNlMDUyOGVhIn0=",
@@ -223,10 +231,58 @@
     }
 },
 {
+    "model": "django_celery_beat.crontabschedule",
+    "pk": 2,
+    "fields": {
+        "minute": "*",
+        "hour": "5",
+        "day_of_week": "*",
+        "day_of_month": "*",
+        "month_of_year": "*",
+        "timezone": "Europe/Kiev"
+    }
+},
+{
+    "model": "django_celery_beat.crontabschedule",
+    "pk": 3,
+    "fields": {
+        "minute": "45",
+        "hour": "5",
+        "day_of_week": "*",
+        "day_of_month": "*",
+        "month_of_year": "*",
+        "timezone": "Europe/Kiev"
+    }
+},
+{
+    "model": "django_celery_beat.crontabschedule",
+    "pk": 4,
+    "fields": {
+        "minute": "43",
+        "hour": "14",
+        "day_of_week": "*",
+        "day_of_month": "*",
+        "month_of_year": "*",
+        "timezone": "Europe/Kiev"
+    }
+},
+{
+    "model": "django_celery_beat.crontabschedule",
+    "pk": 5,
+    "fields": {
+        "minute": "44",
+        "hour": "14",
+        "day_of_week": "*",
+        "day_of_month": "*",
+        "month_of_year": "*",
+        "timezone": "Europe/Kiev"
+    }
+},
+{
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
     "fields": {
-        "last_update": "2020-07-09T14:09:25.316Z"
+        "last_update": "2020-07-11T11:43:37.771Z"
     }
 },
 {
@@ -254,6 +310,34 @@
         "last_run_at": null,
         "total_run_count": 0,
         "date_changed": "2020-07-09T14:09:25.318Z",
+        "description": ""
+    }
+},
+{
+    "model": "django_celery_beat.periodictask",
+    "pk": 2,
+    "fields": {
+        "name": "app_id:1|template_id:1",
+        "task": "slack_integration.tasks.post_message",
+        "interval": null,
+        "crontab": 5,
+        "solar": null,
+        "clocked": null,
+        "args": "[]",
+        "kwargs": "{\"app_id\": 1, \"template_id\": 1}",
+        "queue": null,
+        "exchange": null,
+        "routing_key": null,
+        "headers": "{}",
+        "priority": null,
+        "expires": null,
+        "expire_seconds": null,
+        "one_off": false,
+        "start_time": null,
+        "enabled": true,
+        "last_run_at": "2020-07-11T11:44:00.001Z",
+        "total_run_count": 1,
+        "date_changed": "2020-07-11T11:45:38.724Z",
         "description": ""
     }
 },
@@ -373,6 +457,14 @@
     }
 },
 {
+    "model": "slack_integration.messagetimestamp",
+    "pk": 3,
+    "fields": {
+        "template": 1,
+        "ts": "1594467856.000100"
+    }
+},
+{
     "model": "slack_integration.actionsblock",
     "pk": 22,
     "fields": {
@@ -380,16 +472,6 @@
         "block_id": "dsf",
         "action_subscription": true,
         "callback_url": "https://postman-echo.com/post"
-    }
-},
-{
-    "model": "slack_integration.actionsblock",
-    "pk": 23,
-    "fields": {
-        "template": 7,
-        "block_id": "sfsghh",
-        "action_subscription": false,
-        "callback_url": ""
     }
 },
 {
@@ -706,6 +788,96 @@
         "object_repr": "ActionsBlock object (22)",
         "action_flag": 2,
         "change_message": "[{\"changed\": {\"fields\": [\"Action subscription\", \"Endpoint\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 17,
+    "fields": {
+        "action_time": "2020-07-10T18:06:47.812Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "slack_integration",
+            "template"
+        ],
+        "object_id": "1",
+        "object_repr": "Template object (1)",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 18,
+    "fields": {
+        "action_time": "2020-07-10T18:08:42.554Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "django_celery_beat",
+            "periodictask"
+        ],
+        "object_id": "2",
+        "object_repr": "app_id:1|template_id:7: * 5 * * * (m/h/d/dM/MY) Europe/Kiev",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 19,
+    "fields": {
+        "action_time": "2020-07-10T18:10:48.166Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "slack_integration",
+            "template"
+        ],
+        "object_id": "8",
+        "object_repr": "Template object (8)",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 20,
+    "fields": {
+        "action_time": "2020-07-10T18:13:38.073Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "slack_integration",
+            "slackapplication"
+        ],
+        "object_id": "3",
+        "object_repr": "SlackApplication object (3)",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 21,
+    "fields": {
+        "action_time": "2020-07-11T12:47:01.383Z",
+        "user": [
+            "adm"
+        ],
+        "content_type": [
+            "slack_integration",
+            "actionsblock"
+        ],
+        "object_id": "23",
+        "object_repr": "ActionsBlock object (23)",
+        "action_flag": 3,
+        "change_message": ""
     }
 }
 ]
