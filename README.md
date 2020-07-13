@@ -13,3 +13,7 @@
 | admin | admin | administrator|
 |dev|dev|developer|
 |simple|simple| not a member of any groups|
+
+## Postman collection
+
+> https://www.postman.com/collections/0f9413bfbec1e04695a7
