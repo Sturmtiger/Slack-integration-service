@@ -8,7 +8,13 @@ from .slack_message_constructors import (PostSlackMessageConstructor,
 
 
 class CustomSlackWebClient:
-    def __init__(self, app_obj, template_obj=None, channel_id=None):
+    def __init__(self, app_obj, template_obj=None, channel_id=None,
+                 post_message_constr_class=PostSlackMessageConstructor,
+                 update_message_constr_class=UpdateSlackMessageConstructor,):
+
+        self.post_message_constr_class = post_message_constr_class
+        self.update_message_constr_class = update_message_constr_class
+
         self.app_obj = app_obj
         self.template_obj = template_obj
         self.channel_id = channel_id
@@ -16,7 +22,7 @@ class CustomSlackWebClient:
         self._make_connection()
 
     def post_message(self, message_text=None):
-        post_message_constructor = PostSlackMessageConstructor(
+        post_message_constructor = self.post_message_constr_class(
                                        self.template_obj,
                                        message_text)
         message = post_message_constructor.get_message_payload()
@@ -30,7 +36,7 @@ class CustomSlackWebClient:
         return slack_response
 
     def update_message(self, message_text, ts):
-        update_message_constructor = UpdateSlackMessageConstructor(
+        update_message_constructor = self.update_message_constr_class(
                                          self.template_obj,
                                          message_text,
                                          ts)
